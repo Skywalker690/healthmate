@@ -97,6 +97,12 @@
 			<artifactId>spring-dotenv</artifactId>
 			<version>2.5.4</version>
 		</dependency>
+		<!--For showing envs-->
+		<dependency>
+			<groupId>io.github.skywalker690</groupId>
+			<artifactId>spring-boot-starter-env-printer</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

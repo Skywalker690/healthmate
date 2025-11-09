@@ -14,9 +14,6 @@ public interface IUserService {
     Response getAllUsers();
     Response deleteUser(Long id);
 
-    Response login(LoginRequest loginRequest);
-    Response register(RegisterRequest request);
-
     // Self-service
     Response getCurrentUser();
     Response updateCurrentUser(User updatedUser);

@@ -1,6 +1,8 @@
 import api from './api';
 
 export const userService = {
+
+  // ===================== USER DATA =====================
   getAllUsers: async () => {
     return await api.get('/api/users');
   },
@@ -29,21 +31,16 @@ export const userService = {
     return await api.get(`/api/users/role/${role}`);
   },
 
-  // Old password-based change (deprecated)
-  changePassword: async (oldPassword, newPassword) => {
-    return await api.put('/api/users/me/password', { oldPassword, newPassword });
-  },
-
-  // OTP-based password change (new flow)
+  // ===================== PASSWORD CHANGE (AUTHENTICATED) =====================
   requestPasswordChangeOTP: async () => {
-    return await api.post('/api/users/me/password/otp/request');
+    return await api.post('/api/auth/password/otp/request');
   },
 
   changePasswordWithOTP: async (otp, newPassword) => {
-    return await api.put('/api/users/me/password/otp', { otp, newPassword });
+    return await api.put('/api/auth/password/otp', { otp, newPassword });
   },
 
-  // Forgot password flow
+  // ===================== FORGOT PASSWORD (UNAUTHENTICATED) =====================
   requestPasswordResetOTP: async (email) => {
     return await api.post('/api/auth/forgot-password/request', { email });
   },
@@ -55,4 +52,5 @@ export const userService = {
   resetPasswordWithOTP: async (email, otp, newPassword) => {
     return await api.post('/api/auth/forgot-password/reset', { email, otp, newPassword });
   },
+
 };

@@ -43,13 +43,13 @@ public class AuthController {
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @PostMapping("/me/password/otp/request")
+    @PostMapping("/password/otp/request")
     public ResponseEntity<Response> requestPasswordChangeOtp() {
         Response response = authService.requestPasswordChangeOtp();
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
-    @PutMapping("/me/password/otp")
+    @PutMapping("password/otp")
     public ResponseEntity<Response> changePasswordWithOtp(@RequestBody PasswordChangeOtpRequest request) {
         Response response = authService.changePasswordWithOtp(request);
         return ResponseEntity.status(response.getStatusCode()).body(response);

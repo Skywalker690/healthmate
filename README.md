@@ -199,7 +199,7 @@ To enable OTP-based password management, configure SMTP in `server/src/main/reso
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
 spring.mail.username=${EMAIL_USERNAME}
-spring.mail.******
+spring.mail.password=${EMAIL_PASSWORD}
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
@@ -299,7 +299,6 @@ The REST API provides comprehensive endpoints for managing users, appointments, 
 - `PUT /appointments/{id}/status` - Update appointment status
 - `DELETE /appointments/{id}` - Delete appointment
 
-For complete API documentation, see [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) or the Postman collection in `server/Documentation/`.
 
 ## 🔒 Security
 
@@ -312,7 +311,6 @@ For complete API documentation, see [docs/API_DOCUMENTATION.md](docs/API_DOCUMEN
 - **Validation**: Input validation on all endpoints
 - **Scheduled Tasks**: Automatic cleanup of expired OTPs
 
-For detailed security information, see [docs/SECURITY.md](docs/SECURITY.md) and [docs/BACKEND_OTP_IMPLEMENTATION.md](docs/BACKEND_OTP_IMPLEMENTATION.md).
 
 ## 📝 License
 

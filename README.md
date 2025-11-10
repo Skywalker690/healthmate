@@ -1,277 +1,327 @@
-# HealthMate 🏥
+# Documentation Index
 
-A comprehensive healthcare management system built with Spring Boot and React, designed to streamline medical appointments, patient records, and healthcare provider workflows.
+Welcome to the HealthMate documentation! This directory contains comprehensive guides for developers, administrators, and users.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-19.1.1-blue.svg)](https://reactjs.org/)
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Getting Started](#getting-started)
-- [Documentation](#documentation)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Contributing](#contributing)
-- [License](#license)
-
-## 🎯 Overview
-
-HealthMate is a modern, full-stack healthcare management platform that enables seamless interaction between patients, doctors, and administrators. The system provides role-based access control, appointment scheduling, profile management, and comprehensive administrative tools.
-
-### Key Highlights
-
-- **Role-Based Access Control**: Three user roles (Admin, Doctor, Patient) with specific permissions
-- **Appointment Management**: Schedule, track, and manage medical appointments
-- **User Management**: Complete CRUD operations for users, doctors, and patients
-- **Secure Authentication**: JWT-based authentication and authorization
-- **Responsive Design**: Mobile-first UI built with React and Tailwind CSS
-- **RESTful API**: Well-documented REST API with comprehensive endpoints
-
-## ✨ Features
-
-### For Patients
-- 👤 Register and manage personal profile
-- 📅 Book appointments with doctors
-- 📋 View appointment history
-- 🔐 Secure login and password management
-- 📱 Responsive interface for mobile and desktop
-
-### For Doctors
-- 👨‍⚕️ Manage professional profile (specialization, experience, availability)
-- 📅 View and manage appointments
-- 👥 Access patient information
-- 📊 Track appointment statistics
-
-### For Administrators
-- 👥 Manage all users (Admin, Doctor, Patient)
-- 🏥 Oversee all appointments
-- 📊 System-wide analytics and reporting
-- 🔧 Complete administrative control
-
-## 🛠 Tech Stack
-
-### Backend
-- **Framework**: Spring Boot 3.5.6
-- **Language**: Java 17
-- **Database**: PostgreSQL
-- **Security**: Spring Security + JWT (JJWT 0.12.5)
-- **ORM**: Hibernate/JPA
-- **Build Tool**: Maven
-- **Validation**: Jakarta Validation
-
-### Frontend
-- **Framework**: React 19.1.1
-- **Routing**: React Router DOM 7.9.3
-- **Styling**: Tailwind CSS 3.4.17
-- **HTTP Client**: Axios 1.12.2
-- **Icons**: Heroicons 2.2.0
-- **Animations**: Framer Motion 11.0.0
-
-### DevOps
-- **Containerization**: Docker
-- **Version Control**: Git
-- **CI/CD**: GitHub Actions (optional)
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- **Java Development Kit (JDK)**: Version 17 or higher
-- **Node.js**: Version 18 or higher
-- **PostgreSQL**: Version 14 or higher
-- **Maven**: Version 3.8 or higher (or use included Maven wrapper)
-- **Git**: For version control
+## 📚 Documentation Overview
 
 ### Quick Start
+Start here if you're new to HealthMate:
+1. Read the main [README.md](../README.md) for project overview
+2. Follow [INSTALLATION.md](INSTALLATION.md) to set up your environment
+3. Review [DEVELOPMENT.md](DEVELOPMENT.md) if you plan to contribute
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/Skywalker690/Healthmate.git
-   cd Healthmate
-   ```
+### Documentation Files
 
-2. **Set up the database**
-   ```sql
-   CREATE DATABASE healthmate;
-   ```
+| Document | Purpose | Audience |
+|----------|---------|----------|
+| [INSTALLATION.md](INSTALLATION.md) | Detailed installation instructions | Developers, DevOps |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | System design and architecture | Developers, Architects |
+| [API_DOCUMENTATION.md](API_DOCUMENTATION.md) | Complete API reference | Developers, API consumers |
+| [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md) | Frontend development guide | Frontend developers |
+| [DATABASE.md](DATABASE.md) | Database schema and design | Developers, DBAs |
+| [SECURITY.md](SECURITY.md) | Security implementation details | Developers, Security engineers |
+| [DEVELOPMENT.md](DEVELOPMENT.md) | Development workflow and standards | Developers, Contributors |
+| [DEPLOYMENT.md](DEPLOYMENT.md) | Production deployment guide | DevOps, System administrators |
+| [TROUBLESHOOTING.md](TROUBLESHOOTING.md) | Common issues and solutions | Everyone |
 
-3. **Configure backend environment**
-   ```bash
-   cd server/src/main/resources
-   cp .env.example .env
-   ```
-   
-   Edit `.env` with your database credentials:
-   ```env
-   JWT_SECRET=your-secret-key-min-256-bits
-   DB_URL=jdbc:postgresql://localhost:5432/healthmate
-   DB_USER=your_db_username
-   DB_PASSWORD=your_db_password
-   ```
+## 🎯 By Role
 
-4. **Start the backend server**
-   ```bash
-   cd server
-   ./mvnw spring-boot:run
-   ```
-   
-   The backend API will be available at `http://localhost:8080`
+### For Developers
+1. [INSTALLATION.md](INSTALLATION.md) - Set up development environment
+2. [ARCHITECTURE.md](ARCHITECTURE.md) - Understand system design
+3. [DEVELOPMENT.md](DEVELOPMENT.md) - Learn coding standards and workflow
+4. [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - API reference
+5. [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md) - Frontend development
+6. [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Debug common issues
 
-5. **Configure frontend environment**
-   ```bash
-   cd client
-   cp .env.example .env
-   ```
-   
-   Edit `.env` if needed:
-   ```env
-   REACT_APP_API_URL=http://localhost:8080
-   ```
+### For DevOps/Administrators
+1. [INSTALLATION.md](INSTALLATION.md) - Initial setup
+2. [DEPLOYMENT.md](DEPLOYMENT.md) - Deploy to production
+3. [DATABASE.md](DATABASE.md) - Database management
+4. [SECURITY.md](SECURITY.md) - Security configuration
+5. [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Resolve issues
 
-6. **Install frontend dependencies and start**
-   ```bash
-   npm install
-   npm start
-   ```
-   
-   The frontend will be available at `http://localhost:3000`
+### For API Consumers
+1. [API_DOCUMENTATION.md](API_DOCUMENTATION.md) - Complete API reference
+2. [SECURITY.md](SECURITY.md) - Authentication methods
+3. [TROUBLESHOOTING.md](TROUBLESHOOTING.md) - Common API issues
 
-### Docker Deployment
+## 📖 Documentation Structure
 
+### 1. Installation Guide
+**File**: [INSTALLATION.md](INSTALLATION.md)
+
+Covers:
+- System requirements
+- Local development setup
+- Database configuration
+- Docker deployment
+- Verification steps
+
+**Estimated reading time**: 15 minutes
+
+### 2. Architecture Documentation
+**File**: [ARCHITECTURE.md](ARCHITECTURE.md)
+
+Covers:
+- System architecture patterns
+- Technology stack
+- Component design
+- Data flow
+- Design patterns
+- Scalability considerations
+
+**Estimated reading time**: 20 minutes
+
+### 3. API Documentation
+**File**: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+
+Covers:
+- Authentication endpoints
+- User management APIs
+- Doctor APIs
+- Patient APIs
+- Appointment APIs
+- Request/response formats
+- Error handling
+
+**Estimated reading time**: 30 minutes
+
+### 4. Frontend Guide
+**File**: [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md)
+
+Covers:
+- React project structure
+- Component architecture
+- State management
+- API integration
+- Styling with Tailwind CSS
+- Best practices
+
+**Estimated reading time**: 25 minutes
+
+### 5. Database Documentation
+**File**: [DATABASE.md](DATABASE.md)
+
+Covers:
+- Database schema
+- Entity relationships
+- Table definitions
+- Indexes and constraints
+- Migrations
+- Backup strategies
+
+**Estimated reading time**: 20 minutes
+
+### 6. Security Guide
+**File**: [SECURITY.md](SECURITY.md)
+
+Covers:
+- Authentication (JWT)
+- Authorization (RBAC)
+- Password security
+- API security
+- Data protection
+- CORS configuration
+- Security best practices
+
+**Estimated reading time**: 25 minutes
+
+### 7. Development Guide
+**File**: [DEVELOPMENT.md](DEVELOPMENT.md)
+
+Covers:
+- Development environment setup
+- Code structure
+- Coding standards
+- Git workflow
+- Testing strategies
+- Debugging tips
+- Contributing guidelines
+
+**Estimated reading time**: 30 minutes
+
+### 8. Deployment Guide
+**File**: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+Covers:
+- Pre-deployment checklist
+- Docker deployment
+- Cloud deployment (AWS, Azure, GCP)
+- CI/CD pipelines
+- Monitoring and logging
+- Scaling strategies
+
+**Estimated reading time**: 35 minutes
+
+### 9. Troubleshooting Guide
+**File**: [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
+Covers:
+- Backend issues
+- Frontend issues
+- Database issues
+- Authentication problems
+- API errors
+- Deployment issues
+- Performance problems
+
+**Estimated reading time**: As needed
+
+## 🔍 Finding Information
+
+### Search by Topic
+
+**Authentication & Security**
+- JWT implementation → [SECURITY.md](SECURITY.md)
+- Login/Register → [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- Token issues → [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+
+**Database**
+- Schema design → [DATABASE.md](DATABASE.md)
+- Connection issues → [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+- Migrations → [DATABASE.md](DATABASE.md)
+
+**API Development**
+- Endpoint reference → [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- Request/Response formats → [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
+- Error handling → [DEVELOPMENT.md](DEVELOPMENT.md)
+
+**Frontend Development**
+- Component structure → [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md)
+- State management → [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md)
+- API integration → [FRONTEND_GUIDE.md](FRONTEND_GUIDE.md)
+
+**Deployment**
+- Docker setup → [DEPLOYMENT.md](DEPLOYMENT.md)
+- Cloud platforms → [DEPLOYMENT.md](DEPLOYMENT.md)
+- Environment configuration → [DEPLOYMENT.md](DEPLOYMENT.md)
+
+## 🚀 Quick Reference
+
+### Common Commands
+
+**Development**:
 ```bash
-# Build and run with Docker
-cd server
-docker build -t healthmate-backend .
-docker run -p 8080:8080 healthmate-backend
+# Backend
+cd server && ./mvnw spring-boot:run
+
+# Frontend
+cd client && npm start
+
+# Tests
+cd server && ./mvnw test
+cd client && npm test
 ```
 
-For detailed installation instructions, see [docs/INSTALLATION.md](docs/INSTALLATION.md).
+**Docker**:
+```bash
+# Build and run
+docker-compose up -d
 
-## 📚 Documentation
+# View logs
+docker-compose logs -f
 
-Comprehensive documentation is available in the `docs/` directory:
-
-- **[Installation Guide](docs/INSTALLATION.md)** - Detailed setup instructions
-- **[Architecture](docs/ARCHITECTURE.md)** - System design and architecture
-- **[API Documentation](docs/API_DOCUMENTATION.md)** - Complete API reference
-- **[Frontend Guide](docs/FRONTEND_GUIDE.md)** - Frontend structure and components
-- **[Database Schema](docs/DATABASE.md)** - Database design and relationships
-- **[Development Guide](docs/DEVELOPMENT.md)** - Development workflow and standards
-- **[Deployment](docs/DEPLOYMENT.md)** - Production deployment guide
-- **[Security](docs/SECURITY.md)** - Security implementation details
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Common issues and solutions
-
-## 📁 Project Structure
-
-```
-Healthmate/
-├── client/                 # React frontend application
-│   ├── public/            # Static assets
-│   ├── src/
-│   │   ├── components/    # Reusable components
-│   │   ├── contexts/      # React Context providers
-│   │   ├── pages/         # Page components
-│   │   ├── services/      # API service layer
-│   │   └── App.js         # Main application component
-│   └── package.json       # Frontend dependencies
-│
-├── server/                # Spring Boot backend application
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/skywalker/backend/
-│   │   │   │   ├── config/        # Configuration classes
-│   │   │   │   ├── controller/    # REST controllers
-│   │   │   │   ├── domain/        # Enums and constants
-│   │   │   │   ├── dto/           # Data Transfer Objects
-│   │   │   │   ├── exception/     # Exception handling
-│   │   │   │   ├── model/         # JPA entities
-│   │   │   │   ├── repository/    # Data repositories
-│   │   │   │   ├── security/      # Security configuration
-│   │   │   │   └── service/       # Business logic
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   │   └── test/          # Test classes
-│   ├── Documentation/     # API contracts and Postman collection
-│   ├── Dockerfile         # Docker configuration
-│   └── pom.xml           # Maven dependencies
-│
-├── docs/                  # Project documentation
-├── LICENSE               # MIT License
-└── README.md            # This file
+# Stop
+docker-compose down
 ```
 
-## 🔌 API Documentation
+**Database**:
+```bash
+# Connect
+psql -U healthmate_user -d healthmate
 
-The REST API provides comprehensive endpoints for managing users, appointments, and authentication.
+# Backup
+pg_dump -U healthmate_user healthmate > backup.sql
 
-**Base URL**: `http://localhost:8080/api`
+# Restore
+psql -U healthmate_user healthmate < backup.sql
+```
 
-### Authentication
-- `POST /auth/register` - Register a new user
-- `POST /auth/login` - User login
+## 📝 Documentation Updates
 
-### Users
-- `GET /users` - Get all users (Admin only)
-- `GET /users/{id}` - Get user by ID
-- `GET /users/me` - Get current user
-- `PUT /users/me` - Update current user
-- `PUT /users/me/password` - Change password
-- `DELETE /users/{id}` - Delete user (Admin only)
+This documentation is actively maintained. If you find:
+- Errors or outdated information
+- Missing topics
+- Unclear explanations
+- Broken links
 
-### Appointments
-- `GET /appointments` - Get all appointments (Admin only)
-- `GET /appointments/{id}` - Get appointment by ID
-- `POST /appointments/{patientId}/{doctorId}` - Create appointment
-- `PUT /appointments/{id}/status` - Update appointment status
-- `DELETE /appointments/{id}` - Delete appointment
+Please:
+1. Open an issue on GitHub
+2. Submit a pull request with corrections
+3. Contact the maintainers
 
-For complete API documentation, see [docs/API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) or the Postman collection in `server/Documentation/`.
+## 🤝 Contributing to Documentation
 
-## 🔒 Security
-
-- **Authentication**: JWT-based token authentication
-- **Authorization**: Role-based access control (RBAC)
-- **Password**: BCrypt password hashing
-- **CORS**: Configurable CORS policy
-- **Validation**: Input validation on all endpoints
-
-For detailed security information, see [docs/SECURITY.md](docs/SECURITY.md).
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
+We welcome documentation improvements! To contribute:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Edit documentation files (Markdown format)
+3. Follow existing style and structure
+4. Submit a pull request
+5. Describe your changes clearly
 
-Please read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for coding standards and best practices.
+### Documentation Style Guide
 
-## 📝 License
+- Use clear, concise language
+- Include code examples where appropriate
+- Add screenshots for UI-related documentation
+- Keep line length reasonable (80-100 characters)
+- Use proper Markdown formatting
+- Update table of contents when adding sections
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 📞 Getting Help
 
-## 👥 Authors
+If you can't find what you need:
 
-- **Skywalker690** - *Initial work* - [GitHub](https://github.com/Skywalker690)
+1. **Search the documentation** - Use Ctrl+F or search in your IDE
+2. **Check troubleshooting** - [TROUBLESHOOTING.md](TROUBLESHOOTING.md) covers common issues
+3. **GitHub Issues** - Search existing issues or open a new one
+4. **GitHub Discussions** - Ask questions in community discussions
+5. **Contact maintainers** - Reach out to project maintainers
 
-## 🙏 Acknowledgments
+## 📚 External Resources
 
-- Spring Boot team for the excellent framework
-- React team for the frontend library
-- All contributors who have helped improve this project
+### Spring Boot
+- [Official Documentation](https://spring.io/projects/spring-boot)
+- [Spring Security](https://spring.io/projects/spring-security)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
 
-## 📞 Support
+### React
+- [Official Documentation](https://react.dev/)
+- [React Router](https://reactrouter.com/)
+- [React Testing Library](https://testing-library.com/react)
 
-For support, please open an issue in the GitHub repository or contact the maintainers.
+### Other Technologies
+- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
+- [Docker Documentation](https://docs.docker.com/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+
+
+## 📊 Documentation Statistics
+
+- **Total files**: 9 documentation files + 1 main README
+- **Total lines**: ~6,300 lines of documentation
+- **Total size**: ~165 KB
+- **Topics covered**: Installation, Architecture, API, Frontend, Database, Security, Development, Deployment, Troubleshooting
+
+## ✅ Documentation Checklist
+
+When working on HealthMate, make sure you've reviewed:
+
+- [ ] README.md - Project overview
+- [ ] INSTALLATION.md - Setup instructions
+- [ ] Relevant guide for your task
+- [ ] TROUBLESHOOTING.md - Known issues
+- [ ] API_DOCUMENTATION.md - If working with APIs
+- [ ] SECURITY.md - If touching authentication/authorization
+
+## 🔄 Version Information
+
+This documentation is for HealthMate version 0.0.1-SNAPSHOT.
+
+Last updated: October 2025
 
 ---
 
-**Made with ❤️ by Skywalker690**
+**Happy coding! 🚀**

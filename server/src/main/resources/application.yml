@@ -1,8 +1,6 @@
-# ============ APPLICATION CONFIGURATION ===================
-
 spring:
   profiles:
-    active:
+    active: local
 
   datasource:
     url: ${env.DB_URL}
@@ -19,10 +17,22 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${env.MAIL_USERNAME}
+    password: ${env.MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 jwt:
   secret: ${env.JWT_SECRET}
 
 env:
   printer:
-    show-values: true
-    project-only: true
+    show-values: false
+    enabled: true     # Change this for turning showing envs

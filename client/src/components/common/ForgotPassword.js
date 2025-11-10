@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
 import { userService } from '../../services/userService';
-import { KeyIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
+import { EnvelopeIcon, KeyIcon, LockClosedIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
-const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
-  const [step, setStep] = useState(1); // 1: Request OTP, 2: Verify OTP & Set Password
+const ForgotPassword = ({ isOpen, onClose, onSuccess }) => {
+  const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
   const [formData, setFormData] = useState({
+    email: '',
     otp: '',
     newPassword: '',
     confirmPassword: '',
@@ -35,10 +36,10 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
     setSuccess('');
 
     if (step === 1) {
-      // Request OTP
+      // Request OTP - validate email first
       setLoading(true);
       try {
-        const response = await userService.requestPasswordChangeOTP();
+        const response = await userService.requestPasswordResetOTP(formData.email);
         if (response.statusCode === 200) {
           setSuccess('OTP sent successfully! Check your email.');
           setTimeout(() => {
@@ -48,52 +49,71 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
         }
       } catch (error) {
         console.error('Failed to send OTP:', error);
-        setError(error.response?.data?.message || 'Failed to send OTP. Please try again.');
+        const errorMsg = error.response?.data?.message || 'Failed to send OTP. Please try again.';
+        setError(errorMsg);
       } finally {
         setLoading(false);
       }
     } else if (step === 2) {
-      // Verify OTP and change password
+      // Verify OTP
       if (!formData.otp || formData.otp.length !== 6) {
         setError('Please enter a valid 6-digit OTP');
         return;
       }
 
+      setLoading(true);
+      try {
+        const response = await userService.verifyPasswordResetOTP(formData.email, formData.otp);
+        if (response.statusCode === 200) {
+          setSuccess('OTP verified successfully!');
+          setTimeout(() => {
+            setSuccess('');
+            setStep(3);
+          }, 1000);
+        }
+      } catch (error) {
+        console.error('Failed to verify OTP:', error);
+        setError(error.response?.data?.message || 'Invalid or expired OTP. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    } else if (step === 3) {
+      // Reset Password
       if (formData.newPassword !== formData.confirmPassword) {
-        setError('New passwords do not match');
+        setError('Passwords do not match');
         return;
       }
 
       if (formData.newPassword.length < 6) {
-        setError('New password must be at least 6 characters long');
+        setError('Password must be at least 6 characters long');
         return;
       }
 
       setLoading(true);
-
       try {
-        const response = await userService.changePasswordWithOTP(
+        const response = await userService.resetPasswordWithOTP(
+          formData.email,
           formData.otp,
           formData.newPassword
         );
-
         if (response.statusCode === 200) {
-          setSuccess('Password changed successfully!');
+          setSuccess('Password reset successfully!');
           setTimeout(() => {
             // Reset form
             setFormData({
+              email: '',
               otp: '',
               newPassword: '',
               confirmPassword: '',
             });
             setStep(1);
-            onSuccess && onSuccess('Password changed successfully!');
+            onSuccess && onSuccess('Password reset successfully! You can now login with your new password.');
             onClose();
           }, 1500);
         }
       } catch (error) {
-        console.error('Failed to change password:', error);
-        setError(error.response?.data?.message || 'Invalid or expired OTP. Please try again.');
+        console.error('Failed to reset password:', error);
+        setError(error.response?.data?.message || 'Failed to reset password. Please try again.');
       } finally {
         setLoading(false);
       }
@@ -102,6 +122,7 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
 
   const handleClose = () => {
     setFormData({
+      email: '',
       otp: '',
       newPassword: '',
       confirmPassword: '',
@@ -113,11 +134,22 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
 
   const handleBack = () => {
     setError('');
-    setStep(1);
+    if (step > 1) {
+      setStep(step - 1);
+    }
   };
 
   const getTitle = () => {
-    return step === 1 ? 'Change Password' : 'Verify OTP & Set New Password';
+    switch (step) {
+      case 1:
+        return 'Forgot Password';
+      case 2:
+        return 'Enter OTP';
+      case 3:
+        return 'Reset Password';
+      default:
+        return 'Forgot Password';
+    }
   };
 
   return (
@@ -136,7 +168,15 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
             step >= 2 ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-border dark:bg-border-dark text-text-secondary dark:text-text-secondary-dark'
           }`}>
-            2
+            {step > 2 ? '✓' : '2'}
+          </div>
+          <div className={`w-12 h-1 transition-all duration-300 ${
+            step >= 3 ? 'bg-primary dark:bg-primary-dark' : 'bg-border dark:bg-border-dark'
+          }`} />
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${
+            step >= 3 ? 'bg-primary dark:bg-primary-dark text-white' : 'bg-border dark:bg-border-dark text-text-secondary dark:text-text-secondary-dark'
+          }`}>
+            3
           </div>
         </div>
 
@@ -159,27 +199,35 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
         <div className={`transition-opacity duration-300 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
           {step === 1 && (
             <>
-              <div className="bg-primary/10 dark:bg-primary-dark/10 border border-primary dark:border-primary-dark rounded-lg px-4 py-3 mb-4">
-                <p className="text-sm text-text-primary dark:text-text-primary-dark">
-                  {userEmail ? (
-                    <>An OTP will be sent to <strong>{userEmail}</strong></>
-                  ) : (
-                    'An OTP will be sent to your registered email'
-                  )}
-                </p>
-              </div>
-              <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                Click "Send OTP" below to receive a verification code via email. You'll use this code to set your new password.
+              <p className="text-sm text-text-secondary dark:text-text-secondary-dark mb-4">
+                Enter your registered email address. We'll verify it and send you an OTP to reset your password.
               </p>
+              <div>
+                <label className="input-label">Email Address</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <EnvelopeIcon className="h-5 w-5 text-text-secondary dark:text-text-secondary-dark" />
+                  </div>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    className="input-field w-full pl-10"
+                    placeholder="you@example.com"
+                    required
+                    disabled={loading}
+                    autoFocus
+                  />
+                </div>
+              </div>
             </>
           )}
 
           {step === 2 && (
             <>
-              <div className="bg-success/10 dark:bg-success-dark/10 border border-success dark:border-success-dark rounded-lg px-4 py-3 mb-4">
-                <p className="text-sm text-success dark:text-success-dark flex items-center">
-                  <CheckCircleIcon className="h-5 w-5 mr-2" />
-                  OTP sent! Check your email
+              <div className="bg-primary/10 dark:bg-primary-dark/10 border border-primary dark:border-primary-dark rounded-lg px-4 py-3 mb-4">
+                <p className="text-sm text-text-primary dark:text-text-primary-dark">
+                  OTP sent to <strong>{formData.email}</strong>
                 </p>
               </div>
               <div>
@@ -205,7 +253,17 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
                   Enter the 6-digit code sent to your email
                 </p>
               </div>
+            </>
+          )}
 
+          {step === 3 && (
+            <>
+              <div className="bg-success/10 dark:bg-success-dark/10 border border-success dark:border-success-dark rounded-lg px-4 py-3 mb-4">
+                <p className="text-sm text-success dark:text-success-dark flex items-center">
+                  <CheckCircleIcon className="h-5 w-5 mr-2" />
+                  OTP verified! Now set your new password
+                </p>
+              </div>
               <div>
                 <label className="input-label">New Password</label>
                 <div className="relative">
@@ -221,6 +279,7 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
                     required
                     minLength="6"
                     disabled={loading}
+                    autoFocus
                   />
                 </div>
                 <p className="text-xs text-text-secondary dark:text-text-secondary-dark mt-1">
@@ -251,7 +310,7 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
         </div>
 
         <div className="flex justify-end space-x-3 pt-4">
-          {step === 2 && (
+          {step > 1 && (
             <button
               type="button"
               onClick={handleBack}
@@ -274,7 +333,13 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
             className="btn-primary"
             disabled={loading}
           >
-            {loading ? 'Processing...' : step === 1 ? 'Send OTP' : 'Change Password'}
+            {loading
+              ? 'Processing...'
+              : step === 1
+              ? 'Send OTP'
+              : step === 2
+              ? 'Verify OTP'
+              : 'Reset Password'}
           </button>
         </div>
       </form>
@@ -282,4 +347,4 @@ const ChangePassword = ({ isOpen, onClose, onSuccess, userEmail }) => {
   );
 };
 
-export default ChangePassword;
+export default ForgotPassword;

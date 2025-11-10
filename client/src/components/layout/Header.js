@@ -132,6 +132,7 @@ const Header = ({ onMenuClick }) => {
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
         onSuccess={handlePasswordChangeSuccess}
+        userEmail={user?.email}
       />
     </>
   );

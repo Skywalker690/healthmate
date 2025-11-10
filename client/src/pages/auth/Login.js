@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { SunIcon, MoonIcon, EyeIcon, EyeSlashIcon, HomeIcon } from '@heroicons/react/24/outline';
+import ForgotPassword from '../../components/common/ForgotPassword';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +12,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [shake, setShake] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -47,6 +50,11 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+  const handleForgotPasswordSuccess = (msg) => {
+    setSuccessMessage(msg);
+    setTimeout(() => setSuccessMessage(''), 5000);
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background-dark py-12 px-4 sm:px-6 lg:px-8">
       <Link
@@ -80,6 +88,11 @@ const Login = () => {
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {successMessage && (
+            <div className="bg-success/10 dark:bg-success-dark/10 border border-success dark:border-success-dark text-success dark:text-success-dark px-4 py-3 rounded-lg animate-fade-in" role="alert">
+              <span className="block sm:inline text-sm font-medium">{successMessage}</span>
+            </div>
+          )}
           {error && (
             <div className="bg-error/10 dark:bg-error-dark/10 border border-error dark:border-error-dark text-error dark:text-error-dark px-4 py-3 rounded-lg animate-fade-in" role="alert">
               <span className="block sm:inline text-sm font-medium">{error}</span>
@@ -144,7 +157,14 @@ const Login = () => {
             </button>
           </div>
 
-          <div className="text-center">
+          <div className="flex flex-col items-center space-y-3">
+            <button
+              type="button"
+              onClick={() => setIsForgotPasswordOpen(true)}
+              className="text-sm font-medium text-primary dark:text-primary-dark hover:opacity-80"
+            >
+              Forgot Password?
+            </button>
             <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
               Don't have an account?{' '}
               <Link to="/register" className="font-medium text-primary dark:text-primary-dark hover:opacity-80">
@@ -154,6 +174,12 @@ const Login = () => {
           </div>
         </form>
       </div>
+
+      <ForgotPassword
+        isOpen={isForgotPasswordOpen}
+        onClose={() => setIsForgotPasswordOpen(false)}
+        onSuccess={handleForgotPasswordSuccess}
+      />
     </div>
   );
 };

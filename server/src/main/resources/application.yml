@@ -1,11 +1,11 @@
 spring:
   profiles:
-    active: local
+    active: local  # Default active profile
 
   datasource:
-    url: ${env.DB_URL}
-    username: ${env.DB_USER}
-    password: ${env.DB_PASSWORD}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,14 +14,13 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${env.MAIL_USERNAME}
-    password: ${env.MAIL_PASSWORD}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
@@ -29,10 +28,22 @@ spring:
           starttls:
             enable: true
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000  # 10 min TTL
+
 jwt:
-  secret: ${env.JWT_SECRET}
+  secret: ${JWT_SECRET}
 
 env:
   printer:
     show-values: false
-    enabled: true     # Change this for turning showing envs
+    enabled: false

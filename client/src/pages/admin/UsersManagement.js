@@ -3,7 +3,8 @@ import DashboardLayout from '../../components/layout/DashboardLayout';
 import { userService } from '../../services/userService';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import Modal from '../../components/common/Modal';
-import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/outline';
+import ConfirmDialog from '../../components/common/ConfirmDialog';
+import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 const UsersManagement = () => {
   const [users, setUsers] = useState([]);
@@ -13,17 +14,33 @@ const UsersManagement = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'id', direction: 'asc' });
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState(null);
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [currentPage, pageSize, searchQuery]);
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await userService.getAllUsers();
+      const response = await userService.getAllUsers(currentPage, pageSize, searchQuery);
       if (response.statusCode === 200) {
         setUsers(response.userList || []);
+        
+        // Extract pagination metadata
+        if (response.data) {
+          setTotalPages(response.data.totalPages || 0);
+          setTotalElements(response.data.totalElements || 0);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch users:', error);
@@ -31,6 +48,21 @@ const UsersManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearchQuery(searchTerm);
+    setCurrentPage(0); // Reset to first page on search
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+    setCurrentPage(0); // Reset to first page on page size change
   };
 
   const handleSort = (key) => {
@@ -86,13 +118,16 @@ const UsersManagement = () => {
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) {
-      return;
-    }
+  const handleDeleteUser = (id) => {
+    setUserToDelete(id);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!userToDelete) return;
 
     try {
-      const response = await userService.deleteUser(id);
+      const response = await userService.deleteUser(userToDelete);
       if (response.statusCode === 200) {
         setSuccess('User deleted successfully');
         fetchUsers();
@@ -102,6 +137,8 @@ const UsersManagement = () => {
       console.error('Failed to delete user:', error);
       setError('Failed to delete user');
       setTimeout(() => setError(''), 3000);
+    } finally {
+      setUserToDelete(null);
     }
   };
 
@@ -141,6 +178,47 @@ const UsersManagement = () => {
             {success}
           </div>
         )}
+
+        {/* Search and Filter Controls */}
+        <div className="card">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <form onSubmit={handleSearchSubmit} className="flex-1 w-full sm:w-auto flex gap-2">
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                className="input-field flex-1"
+              />
+              <button
+                type="submit"
+                className="btn-primary flex items-center gap-2 px-4"
+                aria-label="Search"
+              >
+                <MagnifyingGlassIcon className="h-5 w-5" />
+                Search
+              </button>
+            </form>
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                Show:
+              </label>
+              <select
+                value={pageSize}
+                onChange={handlePageSizeChange}
+                className="input-field"
+              >
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+              <span className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                per page
+              </span>
+            </div>
+          </div>
+        </div>
 
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
@@ -236,6 +314,50 @@ const UsersManagement = () => {
               </div>
             )}
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 0 && (
+            <div className="bg-surface dark:bg-surface-dark px-6 py-4 border-t border-border dark:border-border-dark">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                  Showing {currentPage * pageSize + 1} to {Math.min((currentPage + 1) * pageSize, totalElements)} of {totalElements} users
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCurrentPage(0)}
+                    disabled={currentPage === 0}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    First
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(prev => prev - 1)}
+                    disabled={currentPage === 0}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-text-secondary dark:text-text-secondary-dark px-3">
+                    Page {currentPage + 1} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(prev => prev + 1)}
+                    disabled={currentPage >= totalPages - 1}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages - 1)}
+                    disabled={currentPage >= totalPages - 1}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Last
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -315,6 +437,21 @@ const UsersManagement = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => {
+          setDeleteConfirmOpen(false);
+          setUserToDelete(null);
+        }}
+        onConfirm={confirmDelete}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone and will remove all associated data."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+      />
     </DashboardLayout>
   );
 };

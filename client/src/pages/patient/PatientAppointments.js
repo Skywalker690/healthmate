@@ -59,7 +59,7 @@ const PatientAppointments = () => {
     <DashboardLayout>
       <div>
         {/* Header */}
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6 sm:mb-8">
           My Appointments
         </h1>
 
@@ -71,49 +71,51 @@ const PatientAppointments = () => {
           </div>
         )}
 
-        {/* Table */}
-        <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden">
-          <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                {['Code', 'Doctor', 'Specialization', 'Date & Time', 'Status', 'Notes'].map((heading) => (
-                  <th
-                    key={heading}
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
-                               dark:text-gray-300"
-                  >
-                    {heading}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
-              {appointments.map((appointment) => (
-                <tr key={appointment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {appointment.appointmentCode}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    Dr. {appointment.doctor?.name || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {appointment.doctor?.specialization || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                    {formatDateTime(appointment.appointmentDateTime)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${getStatusColor(appointment.status)}`}>
-                      {appointment.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 dark:text-gray-300">
-                    {appointment.notes || 'N/A'}
-                  </td>
+        {/* Desktop Table - Hidden on mobile */}
+        <div className="hidden md:block bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
+                <tr>
+                  {['Code', 'Doctor', 'Specialization', 'Date & Time', 'Status', 'Notes'].map((heading) => (
+                    <th
+                      key={heading}
+                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider
+                                 dark:text-gray-300"
+                    >
+                      {heading}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                {appointments.map((appointment) => (
+                  <tr key={appointment.id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {appointment.appointmentCode}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      Dr. {appointment.doctor?.name || 'N/A'}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {appointment.doctor?.specialization || 'N/A'}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      {formatDateTime(appointment.appointmentDateTime)}
+                    </td>
+                    <td className="px-4 py-4 whitespace-nowrap text-sm">
+                      <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${getStatusColor(appointment.status)}`}>
+                        {appointment.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-sm text-gray-500 dark:text-gray-300">
+                      {appointment.notes || 'N/A'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {/* Empty State */}
           {appointments.length === 0 && (
@@ -123,6 +125,67 @@ const PatientAppointments = () => {
                 Book your first appointment
               </a>
             </div>
+          )}
+        </div>
+
+        {/* Mobile Cards - Hidden on desktop */}
+        <div className="md:hidden space-y-4">
+          {appointments.length === 0 ? (
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-8 text-center text-gray-500 dark:text-gray-400">
+              No appointments found.{' '}
+              <a href="/patient/book-appointment" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200">
+                Book your first appointment
+              </a>
+            </div>
+          ) : (
+            appointments.map((appointment) => (
+              <div
+                key={appointment.id}
+                className="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 space-y-3"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Code</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                      {appointment.appointmentCode}
+                    </p>
+                  </div>
+                  <span className={`px-2 py-1 text-xs leading-5 font-semibold rounded-full ${getStatusColor(appointment.status)}`}>
+                    {appointment.status}
+                  </span>
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Doctor</p>
+                  <p className="text-sm text-gray-900 dark:text-gray-100">
+                    Dr. {appointment.doctor?.name || 'N/A'}
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Specialization</p>
+                  <p className="text-sm text-gray-900 dark:text-gray-100">
+                    {appointment.doctor?.specialization || 'N/A'}
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Date & Time</p>
+                  <p className="text-sm text-gray-900 dark:text-gray-100">
+                    {formatDateTime(appointment.appointmentDateTime)}
+                  </p>
+                </div>
+                
+                {appointment.notes && (
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 uppercase">Notes</p>
+                    <p className="text-sm text-gray-900 dark:text-gray-100">
+                      {appointment.notes}
+                    </p>
+                  </div>
+                )}
+              </div>
+            ))
           )}
         </div>
       </div>

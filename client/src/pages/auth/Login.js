@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
-import { SunIcon, MoonIcon, EyeIcon, EyeSlashIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, HomeIcon } from '@heroicons/react/24/outline';
 import ForgotPassword from '../../components/common/ForgotPassword';
 
 const Login = () => {
@@ -15,7 +14,6 @@ const Login = () => {
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const { login } = useAuth();
-  const { theme, toggleTheme } = useTheme();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +26,7 @@ const Login = () => {
     
     if (!result.success) {
       setError(result.message);
+      setPassword(''); // Clear password field on error
       setShake(true);
       setLoading(false);
       setTimeout(() => setShake(false), 650);
@@ -56,7 +55,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-background-dark py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
       <Link
         to="/"
         className="fixed top-4 left-4 flex items-center gap-2 px-4 py-2 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark hover:bg-primary/10 dark:hover:bg-primary-dark/10 hover:border-primary dark:hover:border-primary-dark transition-all shadow-lg group"
@@ -67,25 +66,11 @@ const Login = () => {
           Home
         </span>
       </Link>
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 flex items-center justify-center w-12 h-12 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark hover:bg-border/20 dark:hover:bg-border-dark/20 transition-colors shadow-lg"
-        aria-label="Toggle Theme"
-      >
-        {theme === 'light' ? (
-          <MoonIcon className="h-6 w-6 text-text-primary dark:text-text-primary-dark" />
-        ) : (
-          <SunIcon className="h-6 w-6 text-text-primary dark:text-text-primary-dark" />
-        )}
-      </button>
       <div className={`max-w-md w-full space-y-8 card ${shake ? 'animate-shake' : ''}`}>
         <div>
           <h2 className="text-center text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
             Healthcare Management System
           </h2>
-          <p className="mt-2 text-center text-sm text-text-secondary dark:text-text-secondary-dark">
-            Sign in to your account
-          </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {successMessage && (

@@ -1,20 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import {
   ArrowRightOnRectangleIcon,
   KeyIcon,
-  SunIcon,
-  MoonIcon,
   Bars3Icon,
   HomeIcon,
 } from '@heroicons/react/24/outline';
 import ChangePassword from '../common/ChangePassword';
+import NotificationBell from '../common/NotificationBell';
 import { Link } from 'react-router-dom';
 
 const Header = ({ onMenuClick }) => {
   const { user, role, logout } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -85,6 +82,9 @@ const Header = ({ onMenuClick }) => {
                 </div>
               </div>
 
+              {/* Notifications */}
+              <NotificationBell />
+
               {/* Home */}
               <Link
                 to="/"
@@ -93,18 +93,6 @@ const Header = ({ onMenuClick }) => {
                 <HomeIcon className="h-5 w-5 text-text-primary dark:text-text-primary-dark" />
                 <span className="hidden sm:inline">Home</span>
               </Link>
-
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="flex items-center justify-center w-10 h-10 rounded-lg bg-background dark:bg-background-dark border border-border dark:border-border-dark focus:outline-none focus:ring-2 focus:ring-primary/20"
-              >
-                {theme === 'light' ? (
-                  <MoonIcon className="h-5 w-5 text-text-primary dark:text-text-primary-dark" />
-                ) : (
-                  <SunIcon className="h-5 w-5 text-text-primary dark:text-text-primary-dark" />
-                )}
-              </button>
 
               {/* Change Password (hidden xs) */}
               <button

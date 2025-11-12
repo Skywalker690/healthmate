@@ -33,6 +33,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const doctorLinks = [
     { path: '/doctor', label: 'Dashboard', icon: ChartBarIcon },
     { path: '/doctor/appointments', label: 'My Appointments', icon: CalendarIcon },
+    { path: '/doctor/schedule', label: 'Manage Schedule', icon: CalendarIcon },
     { path: '/doctor/profile', label: 'My Profile', icon: UserCircleIcon },
   ];
 

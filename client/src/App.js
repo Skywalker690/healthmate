@@ -23,6 +23,7 @@ import AppointmentsManagement from './pages/admin/AppointmentsManagement';
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
 import DoctorAppointments from './pages/doctor/DoctorAppointments';
 import DoctorProfile from './pages/doctor/DoctorProfile';
+import DoctorSchedule from './pages/doctor/DoctorSchedule';
 
 // Patient Pages
 import PatientDashboard from './pages/patient/PatientDashboard';
@@ -106,6 +107,14 @@ function App() {
             element={
               <ProtectedRoute allowedRoles={['ROLE_DOCTOR']}>
                 <DoctorProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/doctor/schedule"
+            element={
+              <ProtectedRoute allowedRoles={['ROLE_DOCTOR']}>
+                <DoctorSchedule />
               </ProtectedRoute>
             }
           />

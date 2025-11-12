@@ -3,54 +3,68 @@ import api from './api';
 export const userService = {
 
   // ===================== USER DATA =====================
-  getAllUsers: async () => {
-    return await api.get('/api/users');
+  getAllUsers: async (page = 0, size = 10, search = '') => {
+    const params = { page, size };
+    if (search) params.search = search;
+    const response = await api.get('/api/users', { params });
+    return response.data;
   },
 
   getUserById: async (id) => {
-    return await api.get(`/api/users/${id}`);
+    const response = await api.get(`/api/users/${id}`);
+    return response.data;
   },
 
   getCurrentUser: async () => {
-    return await api.get('/api/users/me');
+    const response = await api.get('/api/users/me');
+    return response.data;
   },
 
   updateUser: async (id, userData) => {
-    return await api.put(`/api/users/${id}`, userData);
+    const response = await api.put(`/api/users/${id}`, userData);
+    return response.data;
   },
 
   updateCurrentUser: async (userData) => {
-    return await api.put('/api/users/me', userData);
+    const response = await api.put('/api/users/me', userData);
+    return response.data;
   },
 
   deleteUser: async (id) => {
-    return await api.delete(`/api/users/${id}`);
+    const response = await api.delete(`/api/users/${id}`);
+    return response.data;
   },
 
   getUsersByRole: async (role) => {
-    return await api.get(`/api/users/role/${role}`);
+    const response = await api.get(`/api/users/role/${role}`);
+    return response.data;
   },
 
   // ===================== PASSWORD CHANGE (AUTHENTICATED) =====================
   requestPasswordChangeOTP: async () => {
-    return await api.post('/api/auth/password/otp/request');
+    const response = await api.post('/api/auth/password/otp/request');
+    return response.data;
   },
 
   changePasswordWithOTP: async (otp, newPassword) => {
-    return await api.put('/api/auth/password/otp', { otp, newPassword });
+    const response = await api.put('/api/auth/password/otp', { otp, newPassword });
+    return response.data;
   },
 
   // ===================== FORGOT PASSWORD (UNAUTHENTICATED) =====================
   requestPasswordResetOTP: async (email) => {
-    return await api.post('/api/auth/forgot-password/request', { email });
+    const response = await api.post('/api/auth/forgot-password/request', { email });
+    return response.data;
   },
 
   verifyPasswordResetOTP: async (email, otp) => {
-    return await api.post('/api/auth/forgot-password/verify', { email, otp });
+    const response = await api.post('/api/auth/forgot-password/verify', { email, otp });
+    return response.data;
   },
 
   resetPasswordWithOTP: async (email, otp, newPassword) => {
-    return await api.post('/api/auth/forgot-password/reset', { email, otp, newPassword });
+    const response = await api.post('/api/auth/forgot-password/reset', { email, otp, newPassword });
+    return response.data;
   },
 
 };

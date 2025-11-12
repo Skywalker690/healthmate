@@ -35,29 +35,51 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const [usersRes, doctorsRes, patientsRes, appointmentsRes] = await Promise.all([
-        userService.getAllUsers(),
-        doctorService.getAllDoctors(),
-        patientService.getAllPatients(),
-        appointmentService.getAllAppointments(),
-      ]);
-
-      const appointments = appointmentsRes.appointmentList || [];
-      const confirmed = appointments.filter(a => a.status === 'CONFIRMED').length;
-      const pending = appointments.filter(a => a.status === 'PENDING' || a.status === 'SCHEDULED').length;
-      const canceled = appointments.filter(a => a.status === 'CANCELED').length;
-
-      setStats({
-        users: usersRes.userList?.length || 0,
-        doctors: doctorsRes.doctorList?.length || 0,
-        patients: patientsRes.patientList?.length || 0,
-        appointments: appointments.length,
-        confirmedAppointments: confirmed,
-        pendingAppointments: pending,
-        canceledAppointments: canceled,
-      });
+      // Use new dashboard analytics endpoint
+      const response = await import('../../services/dashboardService').then(m => m.dashboardService.getAdminDashboard());
+      
+      if (response.statusCode === 200 && response.dashboardStats) {
+        const data = response.dashboardStats;
+        setStats({
+          users: data.totalUsers || 0,
+          doctors: data.totalDoctors || 0,
+          patients: data.totalPatients || 0,
+          appointments: data.totalAppointments || 0,
+          todayAppointments: data.todayAppointments || 0,
+          weeklyAppointments: data.weeklyAppointments || 0,
+          monthlyAppointments: data.monthlyAppointments || 0,
+          confirmedAppointments: data.confirmedAppointments || 0,
+          pendingAppointments: data.pendingAppointments || 0,
+          canceledAppointments: data.cancelledAppointments || 0,
+          topDoctors: data.topConsultedDoctors || [],
+        });
+      }
     } catch (error) {
       console.error('Failed to fetch stats:', error);
+      // Fallback to paginated endpoints with large page size to get totals
+      try {
+        const [usersRes, doctorsRes, patientsRes, appointmentsRes] = await Promise.all([
+          userService.getAllUsers(0, 1000, ''),
+          doctorService.getAllDoctors(0, 1000, ''),
+          patientService.getAllPatients(),
+          appointmentService.getAllAppointments(0, 1000, '', '', ''),
+        ]);
+
+        // Extract totals from pagination metadata
+        const userTotal = usersRes.data?.totalElements || usersRes.userList?.length || 0;
+        const doctorTotal = doctorsRes.data?.totalElements || doctorsRes.doctorList?.length || 0;
+        const patientTotal = patientsRes.patientList?.length || 0;
+        const appointmentTotal = appointmentsRes.data?.totalElements || appointmentsRes.appointmentList?.length || 0;
+
+        setStats({
+          users: userTotal,
+          doctors: doctorTotal,
+          patients: patientTotal,
+          appointments: appointmentTotal,
+        });
+      } catch (fallbackError) {
+        console.error('Fallback also failed:', fallbackError);
+      }
     } finally {
       setLoading(false);
     }

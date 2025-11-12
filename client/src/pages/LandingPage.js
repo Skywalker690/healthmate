@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
 import TestimonialsSection from '../components/layout/TestimonialsSection'; 
-import SimpleNavbar from '../components/layout/SimpleNavbar'
+import SimpleNavbar from '../components/layout/SimpleNavbar';
+import BackgroundVideo from '../components/common/BackgroundVideo';
 import { 
   HeartIcon, 
   UserGroupIcon, 
@@ -10,8 +10,6 @@ import {
   ClockIcon,
   ShieldCheckIcon,
   ChartBarIcon,
-  SunIcon,
-  MoonIcon,
   PhoneIcon,
   EnvelopeIcon,
   SparklesIcon,
@@ -25,7 +23,6 @@ import {
 } from '@heroicons/react/24/solid';
 
 function LandingPage() {
-  const { theme, toggleTheme } = useTheme();
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -150,137 +147,101 @@ function LandingPage() {
     { label: 'Customer Satisfaction', value: '98%' }
   ];
 
-const testimonials = [
-  {
-    name: 'Sarah Johnson',
-    role: 'Patient',
-    content: 'This system has made managing my healthcare so much easier. Booking appointments is seamless!',
-    avatar: 'SJ'
-  },
-  {
-    name: 'Dr. Michael Chen',
-    role: 'Cardiologist',
-    content: 'As a doctor, this platform helps me manage my schedule efficiently and focus on patient care.',
-    avatar: 'MC'
-  },
-  {
-    name: 'Emily Rodriguez',
-    role: 'Healthcare Admin',
-    content: 'The analytics and management tools are exceptional. It has streamlined our entire operation.',
-    avatar: 'ER'
-  },
-  {
-    name: 'James Patel',
-    role: 'Patient',
-    content: 'I can easily check my upcoming appointments and reminders. The app gives me peace of mind.',
-    avatar: 'JP'
-  },
-  {
-    name: 'Dr. Aisha Khan',
-    role: 'Dermatologist',
-    content: 'With the online consultation feature, I can reach more patients without compromising on care.',
-    avatar: 'AK'
-  },
-  {
-    name: 'Linda Garcia',
-    role: 'Nurse',
-    content: 'Updating patient records and sharing them with doctors has never been this smooth.',
-    avatar: 'LG'
-  },
-  {
-    name: 'Mark Thompson',
-    role: 'Healthcare IT Manager',
-    content: 'The integration with our hospital systems was flawless. Security and compliance are top-notch.',
-    avatar: 'MT'
-  },
-  {
-    name: 'Rachel Kim',
-    role: 'Patient',
-    content: 'I love the reminders! I never forget to take my medication or attend an appointment now.',
-    avatar: 'RK'
-  }
-];
-
+  const testimonials = [
+    {
+      name: 'Sarah Johnson',
+      role: 'Patient',
+      content: 'This system has made managing my healthcare so much easier. Booking appointments is seamless!',
+      avatar: 'SJ'
+    },
+    {
+      name: 'Dr. Michael Chen',
+      role: 'Cardiologist',
+      content: 'As a doctor, this platform helps me manage my schedule efficiently and focus on patient care.',
+      avatar: 'MC'
+    },
+    {
+      name: 'Emily Rodriguez',
+      role: 'Healthcare Admin',
+      content: 'The analytics and management tools are exceptional. It has streamlined our entire operation.',
+      avatar: 'ER'
+    },
+    {
+      name: 'James Patel',
+      role: 'Patient',
+      content: 'I can easily check my upcoming appointments and reminders. The app gives me peace of mind.',
+      avatar: 'JP'
+    },
+    {
+      name: 'Dr. Aisha Khan',
+      role: 'Dermatologist',
+      content: 'With the online consultation feature, I can reach more patients without compromising on care.',
+      avatar: 'AK'
+    },
+    {
+      name: 'Linda Garcia',
+      role: 'Nurse',
+      content: 'Updating patient records and sharing them with doctors has never been this smooth.',
+      avatar: 'LG'
+    },
+    {
+      name: 'Mark Thompson',
+      role: 'Healthcare IT Manager',
+      content: 'The integration with our hospital systems was flawless. Security and compliance are top-notch.',
+      avatar: 'MT'
+    },
+    {
+      name: 'Rachel Kim',
+      role: 'Patient',
+      content: 'I love the reminders! I never forget to take my medication or attend an appointment now.',
+      avatar: 'RK'
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-surface to-background dark:from-background-dark dark:via-surface-dark dark:to-background-dark">
-      {/* Theme Toggle */}
-      <button
-        onClick={toggleTheme}
-        className="fixed top-4 right-4 z-50 p-3 bg-surface dark:bg-surface-dark rounded-full shadow-lg hover:shadow-xl transition-shadow"
-        aria-label="Toggle theme"
-      >
-        {theme === 'dark' ? (
-          <SunIcon className="h-6 w-6 text-warning" />
-        ) : (
-          <MoonIcon className="h-6 w-6 text-primary" />
-        )}
-      </button>
+    <div className="min-h-screen relative">
 
-      
-      <SimpleNavbar
-        rightElement={
-          <button
-            onClick={toggleTheme}
-            className="p-2 bg-surface dark:bg-surface-dark rounded-full shadow hover:shadow-md transition-shadow"
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? (
-              <SunIcon className="h-5 w-5 text-warning" />
-            ) : (
-              <MoonIcon className="h-5 w-5 text-primary" />
-            )}
-          </button>
-        }
-      />
-        
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-secondary/5 to-transparent"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 lg:py-32">
-          <div className="text-center">
-            
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 dark:bg-primary-dark/10 rounded-full mb-6">
-              <SparklesIcon className="h-5 w-5 text-primary dark:text-primary-dark" />
-              <span className="text-sm font-medium text-primary dark:text-primary-dark">
-                Trusted by 10,000+ Healthcare Professionals
-              </span>
-            </div>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Healthcare Management
-              <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mt-2">
-                Made Simple
-              </span>
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
-              A comprehensive platform connecting patients, doctors, and healthcare administrators 
-              for seamless medical care management and appointment scheduling.
-            </p>
-            <div className="flex items-center justify-center gap-6 mb-12">
-              {trustIndicators.map((indicator, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <indicator.icon className="h-5 w-5 text-success dark:text-success-dark" />
-                  <span className="hidden sm:inline">{indicator.name}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                to="/register"
-                className="btn-primary text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
-              >
-                Get Started Free
-              </Link>
-              <Link
-                to="/login"
-                className="btn-secondary text-lg px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all"
-              >
-                Sign In
-              </Link>
-            </div>
+      <SimpleNavbar />
+
+      {/* HERO SECTION WITH VIDEO */}
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
+        <div className="absolute inset-0 -z-10">
+          <BackgroundVideo />
+        </div>
+        <div className="absolute inset-0 bg-black/40"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 text-center py-24 sm:py-32">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-6">
+            <SparklesIcon className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium text-primary">
+              Trusted by 10,000+ Healthcare Professionals
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6">
+            Healthcare Management
+            <span className="block bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mt-2">
+              Made Simple
+            </span>
+          </h1>
+
+          <p className="text-lg sm:text-xl text-gray-200 max-w-3xl mx-auto mb-8">
+            A comprehensive platform connecting patients, doctors, and healthcare administrators
+            for seamless medical care management and appointment scheduling.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link to="/register" className="btn-primary text-lg px-8 py-4 rounded-xl shadow-lg">
+              Get Started Free
+            </Link>
+            <Link to="/login" className="btn-secondary text-lg px-8 py-4 rounded-xl shadow-lg">
+              Sign In
+            </Link>
           </div>
         </div>
       </section>
+
+      {/* == NOTHING BELOW THIS CHANGED == */}
 
       {/* Stats Section */}
       <section className="py-12 sm:py-16 bg-gradient-to-r from-primary/5 to-secondary/5">
@@ -331,7 +292,7 @@ const testimonials = [
         </div>
       </section>
 
-      {/* How It Works Section */}
+      {/* How It Works */}
       <section className="py-16 sm:py-24 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -374,7 +335,7 @@ const testimonials = [
         </div>
       </section>
 
-      {/* Video Demo Section */}
+      {/* Video Demo */}
       <section className="py-16 sm:py-24 bg-gradient-to-br from-primary/5 via-transparent to-secondary/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -400,7 +361,7 @@ const testimonials = [
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing */}
       <section className="py-16 sm:py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -478,7 +439,7 @@ const testimonials = [
 
       <TestimonialsSection testimonials={testimonials} />
 
-      {/* Newsletter Section */}
+      {/* Newsletter */}
       <section className="py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="card p-8 sm:p-12 text-center bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-primary-dark/5 dark:to-secondary-dark/5">
@@ -591,19 +552,19 @@ const testimonials = [
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-border text-center text-sm text-gray-600 dark:text-gray-400">
-          <p>
-            © {new Date().getFullYear()} Healthcare Management System. All rights reserved. <br />
-            Developed by{' '}
-            <a
-              href="https://github.com/Skywalker690"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary dark:text-primary-dark hover:underline"
-            >
-              Skywalker690 ❤️
-            </a>
-          </p>
-        </div>
+            <p>
+              © {new Date().getFullYear()} Healthcare Management System. All rights reserved. <br />
+              Developed by{' '}
+              <a
+                href="https://github.com/Skywalker690"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary dark:text-primary-dark hover:underline"
+              >
+                Skywalker690 ❤️
+              </a>
+            </p>
+          </div>
         </div>
       </footer>
     </div>

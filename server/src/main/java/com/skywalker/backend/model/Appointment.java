@@ -54,4 +54,10 @@ public class Appointment {
     @JoinColumn(name = "patient_id", nullable = false)
     @JsonIgnore
     private Patient patient;
+
+    // One appointment -> One time slot (optional, for new slot-based bookings)
+    @OneToOne
+    @JoinColumn(name = "time_slot_id")
+    @JsonIgnore
+    private TimeSlot timeSlot;
 }

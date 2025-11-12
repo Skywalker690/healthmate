@@ -17,8 +17,11 @@ public class PatientController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> getAllPatients() {
-        Response response = patientService.getAllPatients();
+    public ResponseEntity<Response> getAllPatients(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Response response = patientService.getAllPatientsPaginated(search, page, size);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

@@ -20,8 +20,11 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> getAllUsers() {
-        Response response = userService.getAllUsers();
+    public ResponseEntity<Response> getAllUsers(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Response response = userService.getAllUsersPaginated(search, page, size);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 

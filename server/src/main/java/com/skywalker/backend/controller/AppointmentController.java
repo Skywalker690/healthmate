@@ -6,9 +6,14 @@ import com.skywalker.backend.dto.StatusRequest;
 import com.skywalker.backend.model.Appointment;
 import com.skywalker.backend.service.impl.AppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +24,13 @@ public class AppointmentController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Response> getAllAppointments() {
-        Response response = appointmentService.getAllAppointments();
+    public ResponseEntity<Response> getAllAppointments(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Response response = appointmentService.getAllAppointmentsPaginated(status, startDate, endDate, page, size);
         return ResponseEntity.status(response.getStatusCode()).body(response);
     }
 
@@ -45,7 +55,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/doctor/{doctorId}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_DOCTOR')")
     public ResponseEntity<Response> getAppointmentsByDoctor(@PathVariable Long doctorId) {
         Response response = appointmentService.getAppointmentsByDoctor(doctorId);
         return ResponseEntity.status(response.getStatusCode()).body(response);
@@ -59,7 +69,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_DOCTOR')")
     public ResponseEntity<Response> updateAppointmentStatus(@PathVariable Long id,
                                                             @RequestBody StatusRequest statusRequest) {
         Response response = appointmentService.updateAppointmentStatus(

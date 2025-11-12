@@ -25,5 +25,15 @@ public class Response {
     private List<PatientDTO> patientList;
     private List<AppointmentDTO> appointmentList;
 
-
+    // New fields for enhanced features
+    private DoctorScheduleDTO schedule;
+    private List<DoctorScheduleDTO> scheduleList;
+    private TimeSlotDTO timeSlot;
+    private List<TimeSlotDTO> timeSlotList;
+    private NotificationDTO notification;
+    private List<NotificationDTO> notificationList;
+    private DashboardStatsDTO dashboardStats;
+    
+    // Generic data field for pagination and other metadata
+    private Object data;
 }

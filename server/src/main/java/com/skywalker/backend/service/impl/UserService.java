@@ -44,6 +44,41 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public Response getAllUsersPaginated(String search, int page, int size) {
+        Response response = new Response();
+        try {
+            org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+            org.springframework.data.domain.Page<User> userPage;
+            
+            if (search != null && !search.trim().isEmpty()) {
+                userPage = userRepository.searchUsers(search, pageable);
+            } else {
+                userPage = userRepository.findAll(pageable);
+            }
+            
+            response.setUserList(Utils.mapUserListToDTOList(userPage.getContent()));
+            response.setStatusCode(200);
+            response.setMessage("Users fetched successfully");
+            
+            // Add pagination metadata
+            java.util.Map<String, Object> paginationData = new java.util.HashMap<>();
+            paginationData.put("content", Utils.mapUserListToDTOList(userPage.getContent()));
+            paginationData.put("currentPage", userPage.getNumber());
+            paginationData.put("totalPages", userPage.getTotalPages());
+            paginationData.put("totalElements", userPage.getTotalElements());
+            paginationData.put("pageSize", userPage.getSize());
+            paginationData.put("hasNext", userPage.hasNext());
+            paginationData.put("hasPrevious", userPage.hasPrevious());
+            response.setData(paginationData);
+            
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error occurred while fetching users: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     public Response getUserById(Long id) {
         Response response = new Response();
         try {

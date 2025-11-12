@@ -7,6 +7,8 @@ import com.skywalker.backend.model.User;
 public interface IPatientService {
 
     Response getAllPatients();
+    
+    Response getAllPatientsPaginated(String search, int page, int size);
 
     Response getPatientById(Long id);
 

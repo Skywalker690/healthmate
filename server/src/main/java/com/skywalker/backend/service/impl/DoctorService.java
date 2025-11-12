@@ -10,9 +10,13 @@ import com.skywalker.backend.repository.UserRepository;
 import com.skywalker.backend.security.Utils;
 import com.skywalker.backend.service.repo.IDoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class DoctorService implements IDoctorService {
     private final UserRepository userRepository;
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "doctors", key = "'all'")
     public Response getAllDoctors() {
         Response response = new Response();
         try {
@@ -32,6 +37,66 @@ public class DoctorService implements IDoctorService {
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error occurred while fetching doctor: " + e.getMessage());
+        }
+        return response;
+    }
+
+    public Response getAllDoctorsPaginated(String search, String specialty, Pageable pageable) {
+        Response response = new Response();
+        try {
+            Page<Doctor> doctorPage;
+            
+            // Priority: specialty filter > general search > all
+            if (specialty != null && !specialty.trim().isEmpty()) {
+                // Exact specialty match
+                doctorPage = doctorRepository.findBySpecialtyExact(specialty, pageable);
+            } else if (search != null && !search.trim().isEmpty()) {
+                // Search by name or specialization
+                doctorPage = doctorRepository.searchDoctors(search, pageable);
+            } else {
+                // Get all doctors with pagination
+                doctorPage = doctorRepository.findAll(pageable);
+            }
+            
+            List<DoctorDTO> doctorDTOs = Utils.mapDoctorListToDTOList(doctorPage.getContent());
+            
+            // Prepare pagination metadata
+            Map<String, Object> paginationData = new HashMap<>();
+            paginationData.put("content", doctorDTOs);
+            paginationData.put("currentPage", doctorPage.getNumber());
+            paginationData.put("totalPages", doctorPage.getTotalPages());
+            paginationData.put("totalElements", doctorPage.getTotalElements());
+            paginationData.put("pageSize", doctorPage.getSize());
+            paginationData.put("hasNext", doctorPage.hasNext());
+            paginationData.put("hasPrevious", doctorPage.hasPrevious());
+            
+            response.setDoctorList(doctorDTOs);
+            response.setData(paginationData);
+            response.setStatusCode(200);
+            response.setMessage("Doctors fetched successfully");
+            
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error occurred while fetching doctors: " + e.getMessage());
+        }
+        return response;
+    }
+    
+    public Response getAllSpecializations() {
+        Response response = new Response();
+        try {
+            List<String> specializations = doctorRepository.findAllSpecializations();
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("specializations", specializations);
+            
+            response.setData(data);
+            response.setStatusCode(200);
+            response.setMessage("Specializations fetched successfully");
+            
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error occurred while fetching specializations: " + e.getMessage());
         }
         return response;
     }
@@ -54,6 +119,7 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
+    @org.springframework.cache.annotation.Cacheable(value = "doctors", key = "'spec-' + #specialization")
     public Response getDoctorsBySpecialization(String specialization) {
         Response response = new Response();
         try {
@@ -81,6 +147,7 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
+    @org.springframework.cache.annotation.CacheEvict(value = "doctors", allEntries = true)
     public Response updateDoctor(Long doctorId, Doctor request) {
         Response response = new Response();
         try {

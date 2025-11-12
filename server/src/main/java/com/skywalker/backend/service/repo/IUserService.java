@@ -8,6 +8,7 @@ public interface IUserService {
 
     Response getUserById(Long id);
     Response getAllUsers();
+    Response getAllUsersPaginated(String search, int page, int size);
     Response deleteUser(Long id);
 
     // Self-service

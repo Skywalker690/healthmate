@@ -1,5 +1,6 @@
 package com.skywalker.backend.service.impl;
 
+import com.skywalker.backend.dto.PatientDTO;
 import com.skywalker.backend.dto.Response;
 import com.skywalker.backend.exception.OurException;
 import com.skywalker.backend.model.Patient;
@@ -9,10 +10,15 @@ import com.skywalker.backend.repository.UserRepository;
 import com.skywalker.backend.security.Utils;
 import com.skywalker.backend.service.repo.IPatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,43 @@ public class PatientService implements IPatientService {
             response.setPatientList(Utils.mapPatientListToDTOList(patients));
             response.setStatusCode(200);
             response.setMessage("Patient fetched successfully");
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error occurred while fetching patients: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
+    public Response getAllPatientsPaginated(String search, int page, int size) {
+        Response response = new Response();
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Patient> patientPage;
+            
+            if (search != null && !search.trim().isEmpty()) {
+                patientPage = patientRepository.searchPatients(search, pageable);
+            } else {
+                patientPage = patientRepository.findAll(pageable);
+            }
+            
+            List<PatientDTO> patientDTOs = Utils.mapPatientListToDTOList(patientPage.getContent());
+            
+            // Prepare pagination metadata
+            Map<String, Object> paginationData = new HashMap<>();
+            paginationData.put("content", patientDTOs);
+            paginationData.put("currentPage", patientPage.getNumber());
+            paginationData.put("totalPages", patientPage.getTotalPages());
+            paginationData.put("totalElements", patientPage.getTotalElements());
+            paginationData.put("pageSize", patientPage.getSize());
+            paginationData.put("hasNext", patientPage.hasNext());
+            paginationData.put("hasPrevious", patientPage.hasPrevious());
+            
+            response.setPatientList(patientDTOs);
+            response.setData(paginationData);
+            response.setStatusCode(200);
+            response.setMessage("Patients fetched successfully");
+            
         } catch (Exception e) {
             response.setStatusCode(500);
             response.setMessage("Error occurred while fetching patients: " + e.getMessage());

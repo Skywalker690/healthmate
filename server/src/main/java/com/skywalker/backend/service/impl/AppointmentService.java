@@ -16,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,6 +29,8 @@ public class AppointmentService implements IAppointmentService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
     private final AppointmentRepository appointmentRepository;
+    private final NotificationService notificationService;
+    private final AuditLogService auditLogService;
 
 
     @Override
@@ -57,6 +61,26 @@ public class AppointmentService implements IAppointmentService {
 
             Appointment savedAppointment = appointmentRepository.save(appointmentRequest);
             AppointmentDTO appointmentDTO = Utils.mapAppointmentToDTO(savedAppointment);
+
+            // Send notifications
+            notificationService.sendNotification(
+                doctor.getUser().getId(),
+                "New appointment booked by " + patient.getUser().getName() + 
+                " on " + appointmentRequest.getAppointmentDateTime()
+            );
+            
+            notificationService.sendNotification(
+                patient.getUser().getId(),
+                "Your appointment with Dr. " + doctor.getUser().getName() + 
+                " is confirmed for " + appointmentRequest.getAppointmentDateTime()
+            );
+
+            // Log the action
+            auditLogService.logAction(
+                patient.getUser().getId(),
+                "APPOINTMENT_CREATED",
+                "Appointment created with doctor ID: " + doctorId
+            );
 
             response.setStatusCode(200);
             response.setMessage("Appointment created successfully");
@@ -93,7 +117,14 @@ public class AppointmentService implements IAppointmentService {
         Response response = new Response();
         try {
             List<Appointment> appointments = appointmentRepository.findByDoctorId(doctorId);
+            LocalDate today = LocalDate.now();
+            
+            // Filter to show only upcoming appointments (today and future)
+            // Exclude completed and cancelled appointments
             List<AppointmentDTO> appointmentDTOList = appointments.stream()
+                    .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
+                    .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
+                    .sorted(Comparator.comparing(Appointment::getAppointmentDateTime))
                     .map(Utils::mapAppointmentToDTO)
                     .collect(Collectors.toList());
 
@@ -113,7 +144,14 @@ public class AppointmentService implements IAppointmentService {
         Response response = new Response();
         try {
             List<Appointment> appointments = appointmentRepository.findByPatientId(patientId);
+            LocalDate today = LocalDate.now();
+            
+            // Filter to show only upcoming appointments (today and future)
+            // Exclude completed and cancelled appointments
             List<AppointmentDTO> appointmentDTOList = appointments.stream()
+                    .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
+                    .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
+                    .sorted(Comparator.comparing(Appointment::getAppointmentDateTime))
                     .map(Utils::mapAppointmentToDTO)
                     .collect(Collectors.toList());
 
@@ -149,6 +187,58 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
+    public Response getAllAppointmentsPaginated(String status, java.time.LocalDate startDate, java.time.LocalDate endDate, int page, int size) {
+        Response response = new Response();
+        try {
+            org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+            org.springframework.data.domain.Page<Appointment> appointmentPage;
+            
+            if (status != null && startDate != null && endDate != null) {
+                LocalDateTime startDateTime = startDate.atStartOfDay();
+                LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+                appointmentPage = appointmentRepository.findByStatusAndDateRange(
+                    STATUS.valueOf(status.toUpperCase()), 
+                    startDateTime, 
+                    endDateTime, 
+                    pageable
+                );
+            } else if (status != null) {
+                appointmentPage = appointmentRepository.findByStatus(STATUS.valueOf(status.toUpperCase()), pageable);
+            } else if (startDate != null && endDate != null) {
+                LocalDateTime startDateTime = startDate.atStartOfDay();
+                LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+                appointmentPage = appointmentRepository.findByDateRange(startDateTime, endDateTime, pageable);
+            } else {
+                appointmentPage = appointmentRepository.findAll(pageable);
+            }
+            
+            List<AppointmentDTO> appointmentDTOList = appointmentPage.getContent().stream()
+                    .map(Utils::mapAppointmentToDTO)
+                    .collect(Collectors.toList());
+            
+            response.setAppointmentList(appointmentDTOList);
+            response.setStatusCode(200);
+            response.setMessage("Appointments fetched successfully");
+            
+            // Add pagination metadata
+            java.util.Map<String, Object> paginationData = new java.util.HashMap<>();
+            paginationData.put("content", appointmentDTOList);
+            paginationData.put("currentPage", appointmentPage.getNumber());
+            paginationData.put("totalPages", appointmentPage.getTotalPages());
+            paginationData.put("totalElements", appointmentPage.getTotalElements());
+            paginationData.put("pageSize", appointmentPage.getSize());
+            paginationData.put("hasNext", appointmentPage.hasNext());
+            paginationData.put("hasPrevious", appointmentPage.hasPrevious());
+            response.setData(paginationData);
+            
+        } catch (Exception e) {
+            response.setStatusCode(500);
+            response.setMessage("Error fetching appointments: " + e.getMessage());
+        }
+        return response;
+    }
+
+    @Override
     public Response updateAppointmentStatus(Long id, @RequestBody STATUS status) {
         Response response = new Response();
         try {
@@ -157,6 +247,19 @@ public class AppointmentService implements IAppointmentService {
 
             appointment.setStatus(status);
             Appointment updatedAppointment = appointmentRepository.save(appointment);
+
+            // Send notification to patient about status change
+            notificationService.sendNotification(
+                appointment.getPatient().getUser().getId(),
+                "Your appointment status has been updated to: " + status.toString()
+            );
+
+            // Log the action
+            auditLogService.logAction(
+                appointment.getDoctor().getUser().getId(),
+                "APPOINTMENT_STATUS_UPDATED",
+                "Appointment ID: " + id + " status changed to " + status.toString()
+            );
 
             AppointmentDTO appointmentDTO = Utils.mapAppointmentToDTO(updatedAppointment);
             response.setStatusCode(200);

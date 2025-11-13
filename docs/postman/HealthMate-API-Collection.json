@@ -1,0 +1,1275 @@
+{
+	"info": {
+		"_postman_id": "healthmate-api-collection",
+		"name": "HealthMate Advanced API",
+		"description": "Complete API collection for HealthMate Advanced - A comprehensive healthcare management system",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "healthmate"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"patient@example.com\",\n  \"password\": \"SecurePass123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"PATIENT\",\n  \"phoneNumber\": \"1234567890\",\n  \"gender\": \"MALE\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"address\": \"123 Main St, City, State\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user (Patient, Doctor, or Admin)"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"authToken\", jsonData.data.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"patient@example.com\",\n  \"password\": \"SecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login with email and password. Returns JWT token."
+					},
+					"response": []
+				},
+				{
+					"name": "Request Password Reset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"patient@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password/request",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "forgot-password", "request"]
+						},
+						"description": "Request password reset OTP via email"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Password Reset OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"patient@example.com\",\n  \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password/verify",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "forgot-password", "verify"]
+						},
+						"description": "Verify OTP for password reset"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password with OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"patient@example.com\",\n  \"otp\": \"123456\",\n  \"newPassword\": \"NewSecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/forgot-password/reset",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "forgot-password", "reset"]
+						},
+						"description": "Reset password using OTP"
+					},
+					"response": []
+				},
+				{
+					"name": "Request Password Change OTP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/password/otp/request",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "password", "otp", "request"]
+						},
+						"description": "Request OTP for password change (authenticated user)"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password with OTP",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"otp\": \"123456\",\n  \"newPassword\": \"NewSecurePass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/password/otp",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "password", "otp"]
+						},
+						"description": "Change password using OTP (authenticated)"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication and authorization endpoints"
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users?search=john&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["users"],
+							"query": [
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search term (optional)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all users with pagination (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						},
+						"description": "Get currently authenticated user's details"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Current User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"phoneNumber\": \"9876543210\",\n  \"gender\": \"FEMALE\",\n  \"address\": \"456 Oak St, City, State\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me"]
+						},
+						"description": "Update current user's profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Get user details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"OldPass123\",\n  \"newPassword\": \"NewPass123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me/password",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "me", "password"]
+						},
+						"description": "Change password for current user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"firstName\": \"Updated\",\n  \"lastName\": \"Name\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Update user by ID (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "{{userId}}"]
+						},
+						"description": "Delete user by ID (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users by Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/role/DOCTOR",
+							"host": ["{{baseUrl}}"],
+							"path": ["users", "role", "DOCTOR"]
+						},
+						"description": "Get users by role: ADMIN, DOCTOR, or PATIENT (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "User management endpoints"
+		},
+		{
+			"name": "Doctors",
+			"item": [
+				{
+					"name": "Get All Doctors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors?search=cardio&specialty=Cardiology&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors"],
+							"query": [
+								{
+									"key": "search",
+									"value": "cardio",
+									"description": "Search term (optional)"
+								},
+								{
+									"key": "specialty",
+									"value": "Cardiology",
+									"description": "Filter by specialization (optional)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all doctors with filtering and pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Specializations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/specializations",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "specializations"]
+						},
+						"description": "Get list of all doctor specializations"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}"]
+						},
+						"description": "Get doctor details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctors by Specialization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/specialization/Cardiology",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "specialization", "Cardiology"]
+						},
+						"description": "Get all doctors by specialization"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"specialization\": \"Cardiology\",\n  \"licenseNumber\": \"LIC123456\",\n  \"experienceYears\": 12,\n  \"consultationFee\": 120.00,\n  \"bio\": \"Experienced cardiologist with 12 years of practice\",\n  \"education\": \"MD from Harvard Medical School\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}"]
+						},
+						"description": "Update doctor profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}"]
+						},
+						"description": "Delete doctor (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Set Doctor Schedule",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n  {\n    \"dayOfWeek\": \"MONDAY\",\n    \"startTime\": \"09:00\",\n    \"endTime\": \"17:00\",\n    \"breakStartTime\": \"12:00\",\n    \"breakEndTime\": \"13:00\"\n  },\n  {\n    \"dayOfWeek\": \"TUESDAY\",\n    \"startTime\": \"09:00\",\n    \"endTime\": \"17:00\",\n    \"breakStartTime\": \"12:00\",\n    \"breakEndTime\": \"13:00\"\n  }\n]"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}/schedule",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}", "schedule"]
+						},
+						"description": "Set weekly schedule for doctor (Admin/Doctor only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor Schedule",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}/schedule",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}", "schedule"]
+						},
+						"description": "Get doctor's weekly schedule"
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Time Slots",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": \"2024-01-31\",\n  \"slotDurationMinutes\": 30\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}/slots/generate",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}", "slots", "generate"]
+						},
+						"description": "Generate appointment time slots (Admin/Doctor only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Slots",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/doctors/{{doctorId}}/slots?date=2024-01-15",
+							"host": ["{{baseUrl}}"],
+							"path": ["doctors", "{{doctorId}}", "slots"],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-01-15",
+									"description": "Date in ISO format (YYYY-MM-DD)"
+								}
+							]
+						},
+						"description": "Get available time slots for a specific date"
+					},
+					"response": []
+				}
+			],
+			"description": "Doctor management and scheduling endpoints"
+		},
+		{
+			"name": "Patients",
+			"item": [
+				{
+					"name": "Get All Patients",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/patients?search=john&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["patients"],
+							"query": [
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search term (optional)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all patients with pagination (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Patient by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["patients", "{{patientId}}"]
+						},
+						"description": "Get patient details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"bloodGroup\": \"O+\",\n  \"medicalHistory\": \"No major illnesses\",\n  \"allergies\": \"Penicillin\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["patients", "{{patientId}}"]
+						},
+						"description": "Update patient profile (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/patients/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["patients", "{{patientId}}"]
+						},
+						"description": "Delete patient (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Patient management endpoints"
+		},
+		{
+			"name": "Appointments",
+			"item": [
+				{
+					"name": "Get All Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments?status=SCHEDULED&startDate=2024-01-01&endDate=2024-01-31&page=0&size=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments"],
+							"query": [
+								{
+									"key": "status",
+									"value": "SCHEDULED",
+									"description": "SCHEDULED, COMPLETED, CANCELLED (optional)"
+								},
+								{
+									"key": "startDate",
+									"value": "2024-01-01",
+									"description": "Start date (optional)"
+								},
+								{
+									"key": "endDate",
+									"value": "2024-01-31",
+									"description": "End date (optional)"
+								},
+								{
+									"key": "page",
+									"value": "0",
+									"description": "Page number"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all appointments with filtering (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"appointmentDate\": \"2024-01-15T10:00:00\",\n  \"reason\": \"Regular checkup\",\n  \"timeSlotId\": 123\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appointments/{{patientId}}/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "{{patientId}}", "{{doctorId}}"]
+						},
+						"description": "Create a new appointment"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments/{{appointmentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "{{appointmentId}}"]
+						},
+						"description": "Get appointment details by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointment by Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments/code/APT-20240115-001",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "code", "APT-20240115-001"]
+						},
+						"description": "Get appointment by appointment code"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointments by Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments/doctor/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "doctor", "{{doctorId}}"]
+						},
+						"description": "Get all appointments for a specific doctor (Admin/Doctor only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointments by Patient",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments/patient/{{patientId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "patient", "{{patientId}}"]
+						},
+						"description": "Get all appointments for a specific patient (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Appointment Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"COMPLETED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/appointments/{{appointmentId}}/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "{{appointmentId}}", "status"]
+						},
+						"description": "Update appointment status: SCHEDULED, COMPLETED, CANCELLED (Admin/Doctor only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/appointments/{{appointmentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["appointments", "{{appointmentId}}"]
+						},
+						"description": "Cancel/delete appointment"
+					},
+					"response": []
+				}
+			],
+			"description": "Appointment management endpoints"
+		},
+		{
+			"name": "Notifications",
+			"item": [
+				{
+					"name": "Get User Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notifications/user/{{userId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["notifications", "user", "{{userId}}"]
+						},
+						"description": "Get all notifications for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unread Notifications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notifications/user/{{userId}}/unread",
+							"host": ["{{baseUrl}}"],
+							"path": ["notifications", "user", "{{userId}}", "unread"]
+						},
+						"description": "Get unread notifications for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Unread Count",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notifications/user/{{userId}}/unread/count",
+							"host": ["{{baseUrl}}"],
+							"path": ["notifications", "user", "{{userId}}", "unread", "count"]
+						},
+						"description": "Get count of unread notifications"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark Notification as Read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+							"host": ["{{baseUrl}}"],
+							"path": ["notifications", "{{notificationId}}", "read"]
+						},
+						"description": "Mark a specific notification as read"
+					},
+					"response": []
+				},
+				{
+					"name": "Mark All as Read",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/notifications/user/{{userId}}/read-all",
+							"host": ["{{baseUrl}}"],
+							"path": ["notifications", "user", "{{userId}}", "read-all"]
+						},
+						"description": "Mark all notifications as read for a user"
+					},
+					"response": []
+				}
+			],
+			"description": "Notification management endpoints"
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "Get Admin Dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "admin"]
+						},
+						"description": "Get admin dashboard statistics (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctor Dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/dashboard/doctor/{{doctorId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["dashboard", "doctor", "{{doctorId}}"]
+						},
+						"description": "Get doctor dashboard statistics (Admin/Doctor only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Dashboard and analytics endpoints"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080/api",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "doctorId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "patientId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "appointmentId",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "notificationId",
+			"value": "1",
+			"type": "string"
+		}
+	]
+}

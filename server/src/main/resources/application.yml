@@ -1,11 +1,11 @@
 spring:
   profiles:
-    active: local  # Default active profile
+    active:  local # Default active profile
 
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${env.DB_URL}
+    username: ${env.DB_USERNAME}
+    password: ${env.DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -19,8 +19,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
+    username: ${env.MAIL_USERNAME:}
+    password: ${env.MAIL_PASSWORD:}
     properties:
       mail:
         smtp:

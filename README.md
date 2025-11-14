@@ -1,4 +1,4 @@
-# HealthMate Advanced 
+# HealthMate 
 
 > A comprehensive healthcare management system for seamless doctor-patient interactions and appointment management.
 

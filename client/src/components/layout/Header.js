@@ -49,7 +49,7 @@ const Header = ({ onMenuClick }) => {
               </div>
             </div>
           )}
-          <div className="flex justify-between items-center py-3">
+          <div className="flex justify-between items-center py-2 sm:py-3">
             {/* Left: Hamburger + Logo */}
             <div className="flex items-center space-x-2">
               <button
@@ -64,7 +64,7 @@ const Header = ({ onMenuClick }) => {
             </div>
 
             {/* Right: Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-3">
+            <div className="flex items-center space-x-1 sm:space-x-2">
               {/* User Info (hidden on small) */}
               <div className="hidden md:flex items-center space-x-2">
                 <div className="w-10 h-10 rounded-full bg-primary/10 dark:bg-primary-dark/10 flex items-center justify-center">
@@ -88,7 +88,7 @@ const Header = ({ onMenuClick }) => {
               {/* Home */}
               <Link
                 to="/"
-                className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark hover:bg-primary/10 dark:hover:bg-primary-dark/10 transition-all text-xs sm:text-sm"
+                className="flex items-center gap-1 sm:gap-2 p-2 sm:px-3 sm:py-2 rounded-lg bg-surface dark:bg-surface-dark border border-border dark:border-border-dark hover:bg-primary/10 dark:hover:bg-primary-dark/10 transition-all text-xs sm:text-sm"
               >
                 <HomeIcon className="h-5 w-5 text-text-primary dark:text-text-primary-dark" />
                 <span className="hidden sm:inline">Home</span>
@@ -97,7 +97,7 @@ const Header = ({ onMenuClick }) => {
               {/* Change Password (hidden xs) */}
               <button
                 onClick={() => setIsChangePasswordOpen(true)}
-                className="hidden sm:flex items-center space-x-1 sm:space-x-2 bg-secondary dark:bg-secondary-dark hover:opacity-90 text-white px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium"
+                className="hidden sm:flex items-center space-x-1 sm:space-x-2 bg-secondary dark:bg-secondary-dark hover:opacity-90 text-white p-2 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm font-medium"
               >
                 <KeyIcon className="h-5 w-5" />
                 <span className="hidden lg:inline">Change</span>
@@ -106,7 +106,7 @@ const Header = ({ onMenuClick }) => {
               {/* Logout */}
               <button
                 onClick={handleLogout}
-                className="flex items-center space-x-1 sm:space-x-2 bg-error dark:bg-error-dark hover:opacity-90 text-white px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium"
+                className="flex items-center space-x-1 sm:space-x-2 bg-error dark:bg-error-dark hover:opacity-90 text-white p-2 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm font-medium"
               >
                 <ArrowRightOnRectangleIcon className="h-5 w-5" />
                 <span className="hidden sm:inline">Logout</span>

@@ -67,8 +67,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           transform transition-transform duration-300 ease-in-out
           bg-surface dark:bg-surface-dark border-r border-border dark:border-border-dark
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-          lg:top-[64px] lg:h-[calc(100vh-64px)]
-          top-0 h-screen lg:h-[calc(100vh-64px)]
+          top-16 h-[calc(100vh-4rem)]
         `}
       >
         <div className="p-4 flex flex-col h-full">
@@ -103,7 +102,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       </aside>
 
       {/* Reserved space so content shifts on desktop */}
-      <div className="lg:ml-64 mt-[64px]" />
+      <div className="lg:ml-64" />
     </>
   );
 };

@@ -180,13 +180,13 @@ const DoctorsManagement = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
               Doctors Management
             </h1>
-            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-2">
+            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-1 sm:mt-2">
               Manage doctor profiles and specializations
             </p>
           </div>

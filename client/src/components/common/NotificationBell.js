@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BellIcon } from '@heroicons/react/24/outline';
 import { BellIcon as BellSolidIcon } from '@heroicons/react/24/solid';
 import { notificationService } from '../../services/notificationService';
@@ -12,7 +12,9 @@ const NotificationBell = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [showDropdown, setShowDropdown] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState('right');
   const dropdownRef = useRef(null);
+  const bellRef = useRef(null);
 
   useEffect(() => {
     if (user?.id) {
@@ -25,17 +27,6 @@ const NotificationBell = () => {
     };
   }, [user]);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
   const connectWebSocket = () => {
     if (user?.email) {
       websocketService.connect(user.email, handleNewNotification);
@@ -45,7 +36,7 @@ const NotificationBell = () => {
   const handleNewNotification = (notification) => {
     setNotifications(prev => [notification, ...prev]);
     setUnreadCount(prev => prev + 1);
-    
+
     // Show browser notification if permitted
     if (Notification.permission === 'granted') {
       new Notification('HealthMate', {
@@ -76,9 +67,54 @@ const NotificationBell = () => {
     }
   };
 
+  const calculateDropdownPosition = useCallback(() => {
+    if (!bellRef.current) return;
+
+    const bellRect = bellRef.current.getBoundingClientRect();
+    const dropdownWidth = 320; // Default width for medium screens
+    const viewportWidth = window.innerWidth;
+    const padding = 16; // Padding from viewport edge
+
+    // Check if there's enough space on the right
+    const spaceOnRight = viewportWidth - bellRect.right;
+
+    // On mobile (< 640px), center the dropdown or use full width
+    if (viewportWidth < 640) {
+      setDropdownPosition('mobile');
+    } else if (spaceOnRight < dropdownWidth + padding) {
+      // Not enough space on right, align to the right edge
+      setDropdownPosition('right');
+    } else {
+      // Enough space, align to the right
+      setDropdownPosition('right');
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (showDropdown) {
+        calculateDropdownPosition();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [showDropdown, calculateDropdownPosition]);
+
   const handleBellClick = () => {
     if (!showDropdown) {
       fetchNotifications();
+      calculateDropdownPosition();
     }
     setShowDropdown(!showDropdown);
   };
@@ -121,6 +157,7 @@ const NotificationBell = () => {
     <div className="relative" ref={dropdownRef}>
       {/* Bell Icon */}
       <button
+        ref={bellRef}
         onClick={handleBellClick}
         className="relative p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
         title="Notifications"
@@ -130,7 +167,7 @@ const NotificationBell = () => {
         ) : (
           <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
         )}
-        
+
         {/* Badge */}
         {unreadCount > 0 && (
           <motion.span
@@ -150,7 +187,20 @@ const NotificationBell = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-72 sm:w-80 md:w-96 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-[500px] overflow-hidden"
+            className={`
+  fixed sm:absolute top-[60px] sm:top-auto mt-0
+  bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700
+  z-50
+  overflow-y-auto
+  max-h-[70vh]
+  transition-all duration-200
+
+  ${dropdownPosition === 'mobile'
+                ? 'left-0 right-0 mx-auto w-[92vw]'
+                : 'right-0 w-72 sm:w-80 md:w-96'}
+`}
+
+            style={dropdownPosition === 'mobile' ? { maxWidth: 'calc(100vw - 2rem)' } : {}}
           >
             {/* Header */}
             <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">

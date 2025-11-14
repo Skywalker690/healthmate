@@ -122,12 +122,13 @@ const NotificationBell = () => {
       {/* Bell Icon */}
       <button
         onClick={handleBellClick}
-        className="relative p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+        className="relative p-1.5 sm:p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+        title="Notifications"
       >
         {unreadCount > 0 ? (
-          <BellSolidIcon className="h-6 w-6 text-primary" />
+          <BellSolidIcon className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
         ) : (
-          <BellIcon className="h-6 w-6" />
+          <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
         )}
         
         {/* Badge */}
@@ -135,7 +136,7 @@ const NotificationBell = () => {
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center"
+            className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center"
           >
             {unreadCount > 9 ? '9+' : unreadCount}
           </motion.span>

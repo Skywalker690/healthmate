@@ -155,13 +155,13 @@ const UsersManagement = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex justify-between items-start sm:items-center">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
               Users Management
             </h1>
-            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-2">
+            <p className="text-xs sm:text-sm text-text-secondary dark:text-text-secondary-dark mt-1 sm:mt-2">
               Manage user accounts and permissions
             </p>
           </div>

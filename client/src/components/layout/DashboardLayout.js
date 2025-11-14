@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }) => {
       <Header onMenuClick={toggleSidebar} />
       <div className="flex">
         <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:max-w-full">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 w-full lg:max-w-full pt-6 sm:pt-6 lg:pt-8">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

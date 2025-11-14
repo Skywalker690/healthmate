@@ -180,13 +180,13 @@ const DoctorsManagement = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex justify-between items-start sm:items-center">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
               Doctors Management
             </h1>
-            <p className="text-sm text-text-secondary dark:text-text-secondary-dark mt-2">
+            <p className="text-xs sm:text-sm text-text-secondary dark:text-text-secondary-dark mt-1 sm:mt-2">
               Manage doctor profiles and specializations
             </p>
           </div>
@@ -206,41 +206,43 @@ const DoctorsManagement = () => {
 
         {/* Search and Filters */}
         <div className="card">
-          <form onSubmit={handleSearchSubmit} className="flex gap-4 items-end">
-            <div className="flex-1">
-              <label className="input-label">Search Doctors</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={handleSearchInputChange}
-                  placeholder="Search by name or specialization..."
-                  className="input-field flex-1"
-                />
-                <button
-                  type="submit"
-                  className="btn-primary flex items-center gap-2 px-4"
-                  aria-label="Search"
-                >
-                  <MagnifyingGlassIcon className="h-5 w-5" />
-                  Search
-                </button>
-              </div>
-            </div>
-            <div>
-              <label className="input-label">Page Size</label>
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <form onSubmit={handleSearchSubmit} className="flex-1 w-full sm:w-auto flex gap-2">
+              <input
+                type="text"
+                placeholder="Search by name or specialization..."
+                value={searchTerm}
+                onChange={handleSearchInputChange}
+                className="input-field flex-1"
+              />
+              <button
+                type="submit"
+                className="btn-primary flex items-center gap-2 px-4"
+                aria-label="Search"
+              >
+                <MagnifyingGlassIcon className="h-5 w-5" />
+                Search
+              </button>
+            </form>
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                Show:
+              </label>
               <select
                 value={pageSize}
                 onChange={handlePageSizeChange}
                 className="input-field"
               >
-                <option value="5">5 per page</option>
-                <option value="10">10 per page</option>
-                <option value="20">20 per page</option>
-                <option value="50">50 per page</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
               </select>
+              <span className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                per page
+              </span>
             </div>
-          </form>
+          </div>
         </div>
 
         <div className="card overflow-hidden">
@@ -249,39 +251,39 @@ const DoctorsManagement = () => {
               <thead className="bg-background dark:bg-background-dark">
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
+                    className="px-3 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
                     onClick={() => handleSort('id')}
                   >
                     ID <SortIcon columnKey="id" />
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
+                    className="px-4 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
                     onClick={() => handleSort('name')}
                   >
                     Name <SortIcon columnKey="name" />
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
+                    className="px-4 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
                     onClick={() => handleSort('email')}
                   >
                     Email <SortIcon columnKey="email" />
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
+                    className="px-4 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
                     onClick={() => handleSort('specialization')}
                   >
                     Specialization <SortIcon columnKey="specialization" />
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5"
+                    className="px-3 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider cursor-pointer hover:bg-primary/5 dark:hover:bg-primary-dark/5 hidden lg:table-cell"
                     onClick={() => handleSort('experience')}
                   >
-                    Experience <SortIcon columnKey="experience" />
+                    Exp. <SortIcon columnKey="experience" />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider hidden xl:table-cell">
                     Available Hours
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-medium text-text-secondary dark:text-text-secondary-dark uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -289,25 +291,25 @@ const DoctorsManagement = () => {
               <tbody className="bg-surface dark:bg-surface-dark divide-y divide-border dark:divide-border-dark">
                 {sortedDoctors.map((doctor) => (
                   <tr key={doctor.id} className="hover:bg-background dark:hover:bg-background-dark">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-primary dark:text-text-primary-dark">
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-text-primary dark:text-text-primary-dark">
                       {doctor.id}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-primary dark:text-text-primary-dark">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-text-primary dark:text-text-primary-dark">
                       {doctor.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary dark:text-text-secondary-dark">
+                    <td className="px-4 py-4 text-sm text-text-secondary dark:text-text-secondary-dark max-w-[200px] truncate">
                       {doctor.email}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary dark:text-text-secondary-dark">
+                    <td className="px-4 py-4 text-sm text-text-secondary dark:text-text-secondary-dark max-w-[150px] truncate">
                       {doctor.specialization || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary dark:text-text-secondary-dark">
-                      {doctor.experience ? `${doctor.experience} years` : 'N/A'}
+                    <td className="px-3 py-4 whitespace-nowrap text-sm text-text-secondary dark:text-text-secondary-dark hidden lg:table-cell">
+                      {doctor.experience ? `${doctor.experience}y` : 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-text-secondary dark:text-text-secondary-dark">
+                    <td className="px-4 py-4 text-sm text-text-secondary dark:text-text-secondary-dark max-w-[120px] truncate hidden xl:table-cell">
                       {doctor.availableHours || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                    <td className="px-4 py-4 whitespace-nowrap text-sm font-medium space-x-2">
                       <button
                         onClick={() => handleViewProfile(doctor.id)}
                         className="text-blue-600 dark:text-blue-400 hover:opacity-80 inline-flex items-center"
@@ -347,42 +349,44 @@ const DoctorsManagement = () => {
 
           {/* Pagination Controls */}
           {totalPages > 0 && (
-            <div className="px-6 py-4 bg-background dark:bg-background-dark border-t border-border dark:border-border-dark flex items-center justify-between">
-              <div className="text-sm text-text-secondary dark:text-text-secondary-dark">
-                Showing {currentPage * pageSize + 1} to {Math.min((currentPage + 1) * pageSize, totalElements)} of {totalElements} doctors
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handlePageChange(0)}
-                  disabled={currentPage === 0}
-                  className="px-3 py-1 rounded border border-border dark:border-border-dark disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/10 dark:hover:bg-primary-dark/10"
-                >
-                  First
-                </button>
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 0}
-                  className="px-3 py-1 rounded border border-border dark:border-border-dark disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/10 dark:hover:bg-primary-dark/10"
-                >
-                  Previous
-                </button>
-                <span className="px-4 py-1 text-sm text-text-primary dark:text-text-primary-dark">
-                  Page {currentPage + 1} of {totalPages}
-                </span>
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage >= totalPages - 1}
-                  className="px-3 py-1 rounded border border-border dark:border-border-dark disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/10 dark:hover:bg-primary-dark/10"
-                >
-                  Next
-                </button>
-                <button
-                  onClick={() => handlePageChange(totalPages - 1)}
-                  disabled={currentPage >= totalPages - 1}
-                  className="px-3 py-1 rounded border border-border dark:border-border-dark disabled:opacity-50 disabled:cursor-not-allowed hover:bg-primary/10 dark:hover:bg-primary-dark/10"
-                >
-                  Last
-                </button>
+            <div className="bg-surface dark:bg-surface-dark px-6 py-4 border-t border-border dark:border-border-dark">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-sm text-text-secondary dark:text-text-secondary-dark">
+                  Showing {currentPage * pageSize + 1} to {Math.min((currentPage + 1) * pageSize, totalElements)} of {totalElements} doctors
+                </div>
+                <div className="flex items-center gap-2 flex-wrap justify-center">
+                  <button
+                    onClick={() => handlePageChange(0)}
+                    disabled={currentPage === 0}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    First
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 0}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Previous
+                  </button>
+                  <span className="text-sm text-text-secondary dark:text-text-secondary-dark px-3">
+                    Page {currentPage + 1} of {totalPages}
+                  </span>
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= totalPages - 1}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Next
+                  </button>
+                  <button
+                    onClick={() => handlePageChange(totalPages - 1)}
+                    disabled={currentPage >= totalPages - 1}
+                    className="btn-outline px-3 py-1 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Last
+                  </button>
+                </div>
               </div>
             </div>
           )}

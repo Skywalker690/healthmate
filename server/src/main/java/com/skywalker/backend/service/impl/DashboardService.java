@@ -55,12 +55,12 @@ public class DashboardService {
             List<Appointment> allAppointments = appointmentRepository.findAll();
             LocalDate today = LocalDate.now();
             
-            // Filter to only upcoming appointments (today and future, excluding completed/cancelled)
+            // Filter to only upcoming appointments (today and future, excluding completed/canceled)
             List<Appointment> upcomingAppointments = allAppointments.stream()
                     .filter(a -> a != null && a.getAppointmentDateTime() != null)
-                    .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
+                    .filter(a -> !a.getAppointmentDateTime().toLocalDate().isBefore(today))
                     .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
-                    .collect(Collectors.toList());
+                    .toList();
             
             stats.setTodayAppointments(upcomingAppointments.stream()
                     .filter(a -> a.getAppointmentDateTime().isAfter(startOfDay))
@@ -83,7 +83,7 @@ public class DashboardService {
                     .filter(a -> a.getStatus() == STATUS.SCHEDULED)
                     .count());
 
-            // Note: Cancelled appointments are excluded from upcoming appointments filter
+            // Note: Canceled appointments are excluded from upcoming appointments filter
             // So this will always be 0. Keeping it for consistency but it's filtered out.
             stats.setCancelledAppointments(0L);
 
@@ -169,7 +169,7 @@ public class DashboardService {
             LocalDate today = LocalDate.now();
             List<AppointmentDTO> recentAppointments = doctorAppointments.stream()
                     .filter(a -> a != null && a.getAppointmentDateTime() != null)
-                    .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
+                    .filter(a -> !a.getAppointmentDateTime().toLocalDate().isBefore(today))
                     .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
                     .sorted(Comparator.comparing(Appointment::getAppointmentDateTime))
                     .limit(10)

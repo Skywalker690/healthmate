@@ -10,6 +10,8 @@ import com.skywalker.backend.repository.UserRepository;
 import com.skywalker.backend.security.Utils;
 import com.skywalker.backend.service.repo.IDoctorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,7 +28,7 @@ public class DoctorService implements IDoctorService {
     private final UserRepository userRepository;
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "doctors", key = "'all'")
+    @Cacheable(value = "doctors", key = "'all'")
     public Response getAllDoctors() {
         Response response = new Response();
         try {
@@ -119,7 +121,7 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
-    @org.springframework.cache.annotation.Cacheable(value = "doctors", key = "'spec-' + #specialization")
+    @Cacheable(value = "doctors", key = "'spec-' + #specialization")
     public Response getDoctorsBySpecialization(String specialization) {
         Response response = new Response();
         try {
@@ -147,7 +149,7 @@ public class DoctorService implements IDoctorService {
     }
 
     @Override
-    @org.springframework.cache.annotation.CacheEvict(value = "doctors", allEntries = true)
+    @CacheEvict(value = "doctors", allEntries = true)
     public Response updateDoctor(Long doctorId, Doctor request) {
         Response response = new Response();
         try {

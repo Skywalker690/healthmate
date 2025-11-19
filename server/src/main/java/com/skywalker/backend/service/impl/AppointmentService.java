@@ -13,13 +13,18 @@ import com.skywalker.backend.repository.PatientRepository;
 import com.skywalker.backend.security.Utils;
 import com.skywalker.backend.service.repo.IAppointmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,7 +125,7 @@ public class AppointmentService implements IAppointmentService {
             LocalDate today = LocalDate.now();
             
             // Filter to show only upcoming appointments (today and future)
-            // Exclude completed and cancelled appointments
+            // Exclude completed and canceled appointments
             List<AppointmentDTO> appointmentDTOList = appointments.stream()
                     .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
                     .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
@@ -147,7 +152,7 @@ public class AppointmentService implements IAppointmentService {
             LocalDate today = LocalDate.now();
             
             // Filter to show only upcoming appointments (today and future)
-            // Exclude completed and cancelled appointments
+            // Exclude completed and canceled appointments
             List<AppointmentDTO> appointmentDTOList = appointments.stream()
                     .filter(a -> a.getAppointmentDateTime().toLocalDate().compareTo(today) >= 0)
                     .filter(a -> a.getStatus() != STATUS.COMPLETED && a.getStatus() != STATUS.CANCELED)
@@ -187,11 +192,11 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Response getAllAppointmentsPaginated(String status, java.time.LocalDate startDate, java.time.LocalDate endDate, int page, int size) {
+    public Response getAllAppointmentsPaginated(String status, LocalDate startDate, LocalDate endDate, int page, int size) {
         Response response = new Response();
         try {
-            org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
-            org.springframework.data.domain.Page<Appointment> appointmentPage;
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Appointment> appointmentPage;
             
             if (status != null && startDate != null && endDate != null) {
                 LocalDateTime startDateTime = startDate.atStartOfDay();
@@ -221,7 +226,7 @@ public class AppointmentService implements IAppointmentService {
             response.setMessage("Appointments fetched successfully");
             
             // Add pagination metadata
-            java.util.Map<String, Object> paginationData = new java.util.HashMap<>();
+            Map<String, Object> paginationData = new HashMap<>();
             paginationData.put("content", appointmentDTOList);
             paginationData.put("currentPage", appointmentPage.getNumber());
             paginationData.put("totalPages", appointmentPage.getTotalPages());

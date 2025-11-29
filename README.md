@@ -23,7 +23,7 @@
 
 ## 🎯 Overview
 
-HealthMate Advanced is a modern, full-stack healthcare management platform that streamlines medical appointment scheduling, doctor-patient communication, and healthcare administration. Built with cutting-edge technologies, it provides a robust, scalable, and secure solution for healthcare facilities of all sizes.
+HealthMate is a modern, full-stack healthcare management platform that streamlines medical appointment scheduling, doctor-patient communication, and healthcare administration. Built with cutting-edge technologies, it provides a robust, scalable, and secure solution for healthcare facilities of all sizes.
 
 ### Key Highlights
 
@@ -69,7 +69,7 @@ HealthMate Advanced is a modern, full-stack healthcare management platform that 
 - **Database**: PostgreSQL 14+
 - **Caching**: Redis 7+
 - **Security**: Spring Security with JWT
-- **WebSocket**: STOMP over SockJS
+- **WebSocket**: STOMP 
 - **ORM**: Hibernate/JPA
 - **Email**: Spring Mail with Gmail SMTP
 - **Build Tool**: Maven
@@ -86,7 +86,6 @@ HealthMate Advanced is a modern, full-stack healthcare management platform that 
 ### DevOps & Tools
 - **Version Control**: Git
 - **API Testing**: Postman
-- **Development**: Spring Boot DevTools, React Scripts
 
 ## 🏗️ Architecture
 
@@ -271,7 +270,7 @@ For complete API documentation with request/response examples, see [API Document
 ## 📁 Project Structure
 
 ```
-healthmate-advanced/
+healthmate/
 ├── server/                          # Backend (Spring Boot)
 │   ├── src/
 │   │   ├── main/
@@ -350,52 +349,6 @@ REACT_APP_API_URL=http://localhost:8080/api
 REACT_APP_WS_URL=http://localhost:8080/ws
 ```
 
-## 🧪 Testing
-
-### Backend Tests
-
-```bash
-cd server
-
-# Run all tests
-./mvnw test
-
-# Run specific test class
-./mvnw test -Dtest=UserServiceTest
-
-# Run with coverage
-./mvnw clean test jacoco:report
-```
-
-### Frontend Tests
-
-```bash
-cd client
-
-# Run tests
-npm test
-
-# Run with coverage
-npm test -- --coverage
-```
-
-## 🐳 Docker Deployment
-
-### Using Docker Compose
-
-```bash
-# Build and start all services
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-
-# Stop services
-docker-compose down
-```
-
-See [Setup Guide](docs/backend/SETUP.md#docker-setup-optional) for Docker configuration.
-
 ## 📊 Performance
 
 - **Response Time**: < 100ms for cached queries
@@ -413,8 +366,7 @@ See [Setup Guide](docs/backend/SETUP.md#docker-setup-optional) for Docker config
 - ✅ Input validation
 - ✅ SQL injection prevention (JPA)
 - ✅ OTP-based password reset
-- ✅ Audit logging
-
+  
 ## 🤝 Contributing
 
 We welcome contributions! Please follow these steps:
@@ -451,16 +403,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support, email [sanjoksiby0@gmail.com](mailto:sanjoksiby0@gmail.com) or open an issue in the GitHub repository.
 
-
-## 📈 Project Status
-
-**Status**: Active Development
-
-**Version**: 3.0.0-SNAPSHOT
-
-**Last Updated**: November 2025
-
----
 
 <div align="center">
 
